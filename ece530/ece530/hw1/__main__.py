@@ -54,8 +54,6 @@ class BroydensMethod:
         dx = -np.linalg.solve(self.J, fx)
         x_i = x + dx
         dfx = f(x_i) - fx
-        print("dx:", dx)
-        print("dfx:", dfx)
         self.J += np.outer((dfx - (self.J @ dx)), dx.T) / (
             np.linalg.norm(dx, ord=2) ** 2
         )
@@ -107,6 +105,11 @@ if __name__ == "__main__":
 
     solve_and_plot("Center-Difference Newton-Raphson", center_difference_newton, x0)
 
-    solve_and_plot("Broydens Method, J0=I", BroydensMethod(J0=Jf(x0)), x0)
+    J0 = np.zeros((2, 2))
+    J0[:, 0] = (f(x0 + np.array([h, 0])) - f(x0 - np.array([h, 0]))) / (2 * h)
+    J0[:, 1] = (f(x0 + np.array([0, h])) - f(x0 - np.array([0, h]))) / (2 * h)
+    solve_and_plot(
+        "Broydens Method, initialized with center-difference", BroydensMethod(J0), x0
+    )
 
     plt.show()
