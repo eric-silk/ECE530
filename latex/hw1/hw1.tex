@@ -5,7 +5,7 @@
 \usepackage{mathtools}
 \usepackage{amsthm}
 \usepackage{ragged2e}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{float}
 \usepackage{pgf,tikz}
 \usepackage[shortlabels]{enumitem}
@@ -20,6 +20,7 @@
 \usepackage{multirow}
 \usepackage{graphicx}
 \usepackage{psfrag}
+\usepackage{listings}
 \renewcommand{\footrulewidth}{0.4pt}
 
 \newtheorem{theorem}{Theorem}[chapter]
@@ -74,6 +75,30 @@ b-d, which one would you choose? Will this change if evaluation of $f$ is much
 more computationally expensive?
 
 \subsection*{Solution}
+\subsubsection*{a-d}
+See code at end of document for implementation, or my repo here:\newline\noindent
+\href{https://github.com/eric-silk/ECE530}{https://github.com/eric-silk/ECE530}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1.25\textwidth, angle=90]{Figure_1.png}
+	\caption{The four methods started from $(5, 0)$}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.25\textwidth, angle=90]{Figure_2.png}
+	\caption{The four methods started from $(5.1, -0.1)$}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.25\textwidth, angle=90]{Figure_3.png}
+	\caption{The four methods started from $(0, 5)$}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.25\textwidth, angle=90]{Figure_4.png}
+	\caption{The four methods started from $(100, -500)$}
+\end{figure}
 
 %--------------------------------------
 
@@ -198,5 +223,9 @@ $\overline{X}$ denote the average (i.e. the output of the filter), we can say:
 	= \frac{1}{N^2}\mathrm{Var}\left(\sum_{i=1}^N X_i\right)
 	= \frac{1}{N^2}\sum_{i=1}^N \mathrm{Var}\left(X_i\right)
 \]
+If the variances are the same ($X_1 = X_2 = X$), then we get:
+\[ \mathrm{Var}(\overline{X}) = \frac{1}{2}\mathrm{Var}(X) \]
+Now, this doesn't seem to imply quite aggressive reduction in variance as demonstrated by the numerical example
+given in class, but it's at least a way to start thinking about how this works.
 
 \end{document}

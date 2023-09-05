@@ -1,11 +1,7 @@
-from typing import Union
-from decimal import Decimal
 import time
 
 import numpy as np
 import matplotlib.pyplot as plt
-
-from .. import numerical_methods as nm
 
 h = 0.5
 
@@ -72,30 +68,46 @@ def solve_and_plot(
 ) -> None:
     _ = fig
     x = x0
-    epsilons = []
+    xs = []
+    xs.append(x0)
     t0 = time.time()
     tf = np.inf
+    converged = False
+    k = 0
     for i in range(iter):
         try:
             x = iterator(x)
             eps = np.linalg.norm(f(x), ord=2)
-            epsilons.append(eps)
+            xs.append(x)
             if eps < epsilon:
                 tf = time.time() - t0
                 print(f"Converged at iteration {i+1}")
+                converged = True
+                k = i
                 break
         except Exception as e:
             print(f"Exception occurred at iterate {i}")
+            k = -1
             raise e
     else:
         print(f"Failed to converge in {iter} iterations!")
 
-    ax.semilogy(epsilons)
-    ax.set_xlabel("Iteration Number")
-    ax.set_ylabel("||f(x)||_2")
-    ax.set_title(
-        f"{desc}\nx0: {x0}, Min Error: {Decimal(min(epsilons)):.3E}, Convergence Time: {tf:.1E} seconds"
+    xs = np.array(xs)
+    errors = xs - xs[-1]
+    errors = np.array([np.linalg.norm(i, ord=2) for i in errors])
+    convert = lambda x: np.array2string(
+        x, precision=2, separator=",", floatmode="fixed"
     )
+    if converged:
+        ax.semilogy(errors)
+        ax.set_xlabel("Iteration Number")
+        ax.set_ylabel("||x^k-x^*||_2")
+        ax.set_title(
+            f"{desc}\nx0: {convert(x0)}, x1: {convert(xs[1])}, x2: {convert(xs[2])}, k={k}",
+            pad=-20,
+        )
+    else:
+        ax.set_title(f"{desc}\nx0: {convert(x0)}, FAILED TO CONVERGE")
 
 
 if __name__ == "__main__":
