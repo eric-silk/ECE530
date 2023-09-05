@@ -65,13 +65,16 @@ def solve_and_plot(
     desc: str,
     iterator,
     x0: np.ndarray,
+    fig: plt.Figure,
+    ax: plt.Axes,
     epsilon: float = 1e-10,
     iter: int = 100,
 ) -> None:
+    _ = fig
     x = x0
     epsilons = []
     t0 = time.time()
-    tf = -1
+    tf = np.inf
     for i in range(iter):
         try:
             x = iterator(x)
@@ -87,29 +90,53 @@ def solve_and_plot(
     else:
         print(f"Failed to converge in {iter} iterations!")
 
-    plt.figure()
-    plt.semilogy(epsilons)
-    plt.xlabel("Iteration Number")
-    plt.ylabel("||f(x)||_2")
-    plt.title(
-        f"{desc}\nMin Error: {Decimal(min(epsilons)):.3E}\nConvergence Time: {tf:.1E} seconds"
+    ax.semilogy(epsilons)
+    ax.set_xlabel("Iteration Number")
+    ax.set_ylabel("||f(x)||_2")
+    ax.set_title(
+        f"{desc}\nx0: {x0}, Min Error: {Decimal(min(epsilons)):.3E}, Convergence Time: {tf:.1E} seconds"
     )
 
 
 if __name__ == "__main__":
-    x0 = np.array([5.0, 0])
+    x0s = [
+        np.array([5.0, 0.0]),
+        np.array([5.1, -0.1]),
+        np.array([0.0, 5.0]),
+        np.array([100, -500]),
+    ]
 
-    solve_and_plot("Symbolic Newton-Raphson", symbolic_newton, x0)
+    for x0 in x0s:
+        fig, axes = plt.subplots(2, 2)
+        fig.tight_layout()
+        solve_and_plot("Symbolic Newton-Raphson", symbolic_newton, x0, fig, axes[0, 0])
 
-    solve_and_plot("Forward-Difference Newton-Raphson", forward_difference_newton, x0)
+        solve_and_plot(
+            "Forward-Difference Newton-Raphson",
+            forward_difference_newton,
+            x0,
+            fig,
+            axes[0, 1],
+        )
 
-    solve_and_plot("Center-Difference Newton-Raphson", center_difference_newton, x0)
+        solve_and_plot(
+            "Center-Difference Newton-Raphson",
+            center_difference_newton,
+            x0,
+            fig,
+            axes[1, 0],
+        )
 
-    J0 = np.zeros((2, 2))
-    J0[:, 0] = (f(x0 + np.array([h, 0])) - f(x0 - np.array([h, 0]))) / (2 * h)
-    J0[:, 1] = (f(x0 + np.array([0, h])) - f(x0 - np.array([0, h]))) / (2 * h)
-    solve_and_plot(
-        "Broydens Method, initialized with center-difference", BroydensMethod(J0), x0
-    )
+        J0 = np.zeros((2, 2))
+        J0[:, 0] = (f(x0 + np.array([h, 0])) - f(x0 - np.array([h, 0]))) / (2 * h)
+        J0[:, 1] = (f(x0 + np.array([0, h])) - f(x0 - np.array([0, h]))) / (2 * h)
+        print(f"Broyden's Method J0:\n{J0}")
+        solve_and_plot(
+            "Broydens Method, initialized with center-difference",
+            BroydensMethod(J0),
+            x0,
+            fig,
+            axes[1, 1],
+        )
 
     plt.show()
