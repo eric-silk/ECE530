@@ -75,9 +75,25 @@ b-d, which one would you choose? Will this change if evaluation of $f$ is much
 more computationally expensive?
 
 \subsection*{Solution}
-\subsubsection*{a-d}
-See code at end of document for implementation, or my repo here:\newline\noindent
-\href{https://github.com/eric-silk/ECE530}{https://github.com/eric-silk/ECE530}
+\subsubsection*{a-e}
+See code at end of document for implementation, or my repo here:
+\begin{center}
+	\href{https://github.com/eric-silk/ECE530}{https://github.com/eric-silk/ECE530}
+\end{center}
+
+Values requested ($x^1$, $x^2$, iteration count) are reported in the subplot
+titles.  Specific to part (e), in general it appears that the symbolic and
+center difference approximation methods tend to behave \textit{very} similarly,
+and typically converge in far fewer iterations than the forward-difference or
+Broyden's method; however, these methods also appear to fail in cases where the
+forward-difference and Broyden's method do not. This may simply be an artifact
+of the relatively low limit on iterations, but it is worth noting.
+
+From this, for an arbitrary function, I'd probably pick Broyden's method (or
+some other quasi-Newton method), especially as the computational cost of each
+function evaluation increases.  It requires only one evaluation of $f$ per
+iterate (which can quickly become the most significant cost), and empirically
+demonstrates good convergence properties in this limited set of experiments.
 
 \begin{figure}
 	\centering
