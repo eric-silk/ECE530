@@ -183,6 +183,7 @@ Finally, because $h$ is some fixed value, the whole quantity is bounded, and we 
 	\leq M|h|
 \]
 \qed
+
 \subsubsection*{b}
 We can modify the expansion to consider a negative $h$, or equivalently the subtraction of
 a positive $h$:
@@ -192,24 +193,26 @@ a positive $h$:
 Then, subtract the two series to find:
 \[
 	f(x+h)-f(x-h)
-	= f(x)+hf'(x)+\frac{h^2}{2}f''(x)+\frac{h^3}{6}f'''(\zeta)
-	- f(x)+hf'(x)-\frac{h^2}{2}f''(x)+\frac{h^3}{6}f'''(\zeta)
+	= f(x)+hf'(x)+\frac{h^2}{2}f''(x)+\frac{h^3}{6}f'''(\zeta_1)
+	- f(x)+hf'(x)-\frac{h^2}{2}f''(x)+\frac{h^3}{6}f'''(\zeta_2)
 \]
 \[
-	= 2hf'(x)+\frac{2h^3}{6}f'''(\zeta)
+	= 2hf'(x)+\frac{h^3}{6}f'''(\zeta_1)+\frac{h^3}{6}f'''(\zeta_2)
 \]
 Rearranging:
 \[
 	\frac{f(x+h)-f(x-h)}{2h} -f'(x)
-	= \frac{h^2}{6}f'''(\zeta)
+	= \frac{h^2}{12}f'''(\zeta_1) + \frac{h^2}{12}f'''(\zeta_2)
 \]
 \[
 	\left|\frac{f(x+h)-f(x-h)}{2h} -f'(x)\right|
-	= \left|\frac{h^2}{6}f'''(\zeta)\right|
-	= \left|h^2\right|\left|\frac{1}{6}f'''(\zeta)\right|
+	= \left| \frac{h^2}{12}f'''(\zeta_1) + \frac{h^2}{12}f'''(\zeta_2) \right|
+	= \left|h^2\right|\left|\frac{1}{12}f'''(\zeta_1)+\frac{1}{12}f'''(\zeta_2)\right|
 \]
-By the same logic as in (2.a), we know that $f'''(\zeta)$ is upper bounded, so we can say:
-\[\frac{1}{6}f'''(\zeta)\leq N\]
+By the same logic as in (2.a), we know that $f'''(\zeta_{1})$ and $f'''(\zeta_{2})$ are upper bounded, so we can say:
+\[
+	\left|\frac{1}{12}f'''(\zeta_1)+\frac{1}{12}f'''(\zeta_2)\right|\leq N
+\]
 Thus:
 \[
 	\left|\frac{f(x+h)-f(x-h)}{2h} -f'(x)\right|
@@ -218,21 +221,22 @@ Thus:
 \qed
 
 \subsubsection*{c}
-As the proofs show, there's a cancellation effect that occurs for some of the more significant
-error terms, resulting in the far better approximation (at least for ``small'' $h$).
-There's an ``averaging'' effect that reduces the error.
+As the proofs show, there's a cancellation effect that occurs for some of the
+more significant error terms, resulting in the far better approximation (at
+least for ``small'' $h$).  There's an ``averaging'' effect that reduces the
+error. Alternatively, for $h<1$, $|h^2|$ will be smaller than $|h|$.
 
-Expanding on the numerical example provided in class, it's worth
-looking at it as a form of a statistical filter\footnote{Note: I'm not
-	exactly a wizard at stats, take this with a grain of salt...}. Some
-``signal'' (the error of the approximation) is oversampled at a $2x$ rate and then is
-passed through an averaging filter. Assume that:
+Expanding on the numerical example provided in class, it's worth looking at it
+as a form of a statistical filter\footnote{Note: I'm not exactly a wizard at
+	stats, take this with a grain of salt...i.e. this probably isn't correct :)}.
+Some ``signal'' (the error of the approximation) is oversampled at a $2x$ rate
+and then is passed through an averaging filter. Assume that:
 \begin{enumerate}
 	\item The samples are uncorrelated
 	\item The distribution of each sample is \textit{normal}
 \end{enumerate}
-which seems justified based on the numerical results presented in class.
-Then, letting $X_i$ denote the distribution of the samples (where $i=1,2$), and
+which seems justified based on the numerical results presented in class.  Then,
+letting $X_i$ denote the distribution of the samples (where $i=1,2$), and
 $\overline{X}$ denote the average (i.e. the output of the filter), we can say:
 \[
 	\mathrm{Var}(\overline{X})
@@ -243,8 +247,9 @@ $\overline{X}$ denote the average (i.e. the output of the filter), we can say:
 \]
 If the variances are the same ($X_1 = X_2 = X$), then we get:
 \[ \mathrm{Var}(\overline{X}) = \frac{1}{2}\mathrm{Var}(X) \]
-Now, this doesn't seem to imply quite aggressive reduction in variance as demonstrated by the numerical example
-given in class, but it's at least a way to start thinking about how this works.
+Now, this doesn't seem to imply quite the aggressive reduction in variance as
+demonstrated by the numerical example given in class, but it's at least a way to
+start thinking about how this works.
 
 \newpage
 \section*{Code Listing}
