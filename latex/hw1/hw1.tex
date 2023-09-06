@@ -82,22 +82,22 @@ See code at end of document for implementation, or my repo here:\newline\noinden
 \begin{figure}
 	\centering
 	\includegraphics[width=1.25\textwidth, angle=90]{Figure_1.png}
-	\caption{The four methods started from $(5, 0)$}
+	\caption{The four methods, started from $(5, 0)$}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=1.25\textwidth, angle=90]{Figure_2.png}
-	\caption{The four methods started from $(5.1, -0.1)$}
+	\caption{The four methods, started from $(5.1, -0.1)$}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=1.25\textwidth, angle=90]{Figure_3.png}
-	\caption{The four methods started from $(0, 5)$}
+	\caption{The four methods, started from $(0, 5)$}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=1.25\textwidth, angle=90]{Figure_4.png}
-	\caption{The four methods started from $(100, -500)$}
+	\caption{The four methods, started from $(100, -500)$}
 \end{figure}
 
 %--------------------------------------
@@ -204,16 +204,18 @@ Thus:
 \subsubsection*{c}
 As the proofs show, there's a cancellation effect that occurs for some of the more significant
 error terms, resulting in the far better approximation (at least for ``small'' $h$).
+There's an ``averaging'' effect that reduces the error.
 
-To riff on the statistical investigation demonstrated in class, I think its
-useful to consider this as a sort of statistical filter\footnote{Note: I'm not
-	exactly a wizard at stats, take this with a grain of salt...}; i.e., some
+Expanding on the numerical example provided in class, it's worth
+looking at it as a form of a statistical filter\footnote{Note: I'm not
+	exactly a wizard at stats, take this with a grain of salt...}. Some
 ``signal'' (the error of the approximation) is oversampled at a $2x$ rate and then is
-passed through an averaging filter. Assuming that:
+passed through an averaging filter. Assume that:
 \begin{enumerate}
 	\item The samples are uncorrelated
 	\item The distribution of each sample is \textit{normal}
 \end{enumerate}
+which seems justified based on the numerical results presented in class.
 Then, letting $X_i$ denote the distribution of the samples (where $i=1,2$), and
 $\overline{X}$ denote the average (i.e. the output of the filter), we can say:
 \[
@@ -227,5 +229,35 @@ If the variances are the same ($X_1 = X_2 = X$), then we get:
 \[ \mathrm{Var}(\overline{X}) = \frac{1}{2}\mathrm{Var}(X) \]
 Now, this doesn't seem to imply quite aggressive reduction in variance as demonstrated by the numerical example
 given in class, but it's at least a way to start thinking about how this works.
+
+\newpage
+\section*{Code Listing}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+\lstset{style=mystyle}
+\lstinputlisting[
+	language=Python,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw1/__main__.py}
 
 \end{document}
