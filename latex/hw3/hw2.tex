@@ -1,0 +1,105 @@
+\documentclass[11pt]{report}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{pgf,tikz}
+\usepackage[shortlabels]{enumitem}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage[margin = 1 in]{geometry}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{listings}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\newcommand{\user}{}
+\newcommand{\xlr}[2]{#1 \left(#2\right)}
+\newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
+\newcommand{\rank}{\mathrm{rank}}
+\lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
+\rhead{HW3}
+\lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
+\rfoot{Due: Wednesday, Sep 27}
+\begin{document}
+
+
+\section*{Problem 1: Can you fit a line?}
+\subsection*{Problem Statement}
+Consider $N$ data points $(\mathbf{x}_i, y_i)$ for $i=1,\ldots,N$ obtained from
+an experiment , where $\mathbf{x}_i\in\mathbb{R}^n$ and $y_i\in\mathbb{R}$. Let
+$N>n+1$. The goal of linear regression is to find the ``best'' linear fit; i.e.
+find $\mathbf{c}\in\mathbb{R}^n$, $d\in\mathbb{R}$ s.t.:
+\[y_i\approx \mathbf{c}^T\mathbf{x}_i + d,\ \textrm{for}\ i=1,\ldots,N\]
+
+\subsubsection*{a}
+Suppose each measurement is corrupted by independent Gaussian noise with
+identical variances and 0 mean. Find $\mathbf{A}\in\mathbb{R}^{N\times(n+1)}$ in
+terms of $\mathbf{x}_1,\ldots,\mathbf{x}_N$ s.t. that the maximum likelihood
+estimate of $\hat{\mathbf{c}}$, $\hat{d}$ is
+\[
+	\begin{pmatrix}
+		\hat{\mathbf{c}} \\
+		\hat{d}
+	\end{pmatrix}
+	=
+	\left(\mathbf{A}^T\mathbf{A}\right)^{-1}\mathbf{A}^Ty,\
+	\textrm{where}\ \mathbf{y}\coloneqq
+	\begin{pmatrix}
+		y_1    \\
+		\vdots \\
+		y_N
+	\end{pmatrix}
+\]
+
+\subsubsection*{b}
+Consider the case with $n=1$; i.e. $x_1,\ldots,x_N$ are scalars. Finding the best linear fit amounts to finding
+$(\hat{c}, \hat{d})$ tht minimizes:
+\[ J(c,d) \coloneqq \sum_{i=1}^{N}(y_i-cx_i-d)^2 \]
+Compute a stationary point $(\hat{c},\hat{d})$ by setting the derivative of $J$ w.r.t $c$ and $d$ to zero.
+
+\subsubsection*{c}
+Use the second derivative tests to conclude that your $(\hat{c}, \hat{d})$ computed in (b) is indeed a
+local minimizer of $J$. Can you conclude from this second derivative test alone that it is a local minimizer?
+
+\subsubsection*{d}
+Consider the following $(x,y)$ pairs:
+\begin{itemize}[itemsep=0pt]
+	\item $(1.00, 1.10)$
+	\item $(1.50, 1.62)$
+	\item $(2.00, 1.98)$
+	\item $(2.57, 2.37)$
+	\item $(3.00, 3.23)$
+	\item $(3.50, 3.69)$
+	\item $(4.00, 3.97)$
+\end{itemize}
+Draw a scatter plot of these points; then, plot the best linear fit to these points using your formula in part (b).
+
+\subsection*{Solution}
+\subsubsection*{a}
+\subsubsection*{b}
+
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+
+\end{document}
