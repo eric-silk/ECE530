@@ -79,7 +79,7 @@ Compute a stationary point $(\hat{c},\hat{d})$ by setting the derivative of $J$ 
 
 \subsubsection*{c}
 Use the second derivative tests to conclude that your $(\hat{c}, \hat{d})$ computed in (b) is indeed a
-local minimizer of $J$. Can you conclude from this second derivative test alone that it is a local minimizer?
+local minimizer of $J$. Can you conclude from this second derivative test alone that it is a global minimizer?
 
 \subsubsection*{d}
 Consider the following $(x,y)$ pairs:
@@ -96,7 +96,99 @@ Draw a scatter plot of these points; then, plot the best linear fit to these poi
 
 \subsection*{Solution}
 \subsubsection*{a}
+We can rewrite the given equation to:
+\[y_i = \mathbf{x}_i^T \mathbf{c} + d\]
+Additionally, let: $\mathbf{1}_N$ be a column vector of 1's with $N$ rows.
+Thus:
+\[
+	\mathbf{y} = \begin{pmatrix}
+		\mathbf{x}_1 \\
+		\vdots       \\
+		\mathbf{x}_N
+	\end{pmatrix}
+	\mathbf{c} + d\mathbf{1}_N
+\]
+We can further re-arrange this to:
+\[
+	\mathbf{y} = \begin{pmatrix}
+		\mathbf{x}_1 & 1      \\
+		\mathbf{x}_2 & 1      \\
+		\vdots       & \vdots \\
+		\mathbf{x}_N & 1
+	\end{pmatrix}
+	\begin{pmatrix}
+		\mathbf{c} \\
+		d
+	\end{pmatrix}
+	\implies
+	\mathbf{A} = \begin{pmatrix}
+		\mathbf{x}_1 & 1      \\
+		\mathbf{x}_2 & 1      \\
+		\vdots       & \vdots \\
+		\mathbf{x}_N & 1
+	\end{pmatrix}
+\]
+
 \subsubsection*{b}
+\[
+	\nabla J(c, d) = \begin{pmatrix}
+		\frac{\partial J}{\partial c} \\
+		\frac{\partial J}{\partial d}
+	\end{pmatrix}
+	=
+	2\begin{pmatrix}
+		\sum_{i=1}^{N}\left(y_i-cx_i-d\right)(-x_i) \\
+		\sum_{i=1}^{N}\left(y_i-cx_i-d\right)(-1)
+	\end{pmatrix}
+\]
+Setting equal to zero and noting that the $2$ can then just drop out (and push the negative sign around):
+\[
+	\mathbf{0} = \begin{pmatrix}
+		\sum_{i=1}^{N}\left(cx_i+d-y_i\right)(x_i) \\
+		\sum_{i=1}^{N}\left(cx_i+d-y_i\right)
+	\end{pmatrix}
+\]
+Exanding the top:
+\[
+	0
+	= \sum_{i=1}^N(cx_i^2+dx_i-y_ix_i)
+	= c\left(\sum x_i^2\right) + d \left(\sum x_i\right) - \left(\sum x_iy_i\right)
+\]
+And the bottom:
+\[
+	0
+	= \sum_{i=1}^N(cx_i+d-y_i)
+	= c\left(\sum x_i\right) + d\left(\sum 1\right) - \left(\sum y_i\right)
+\]
+Solve for $c$:
+\[
+	c = \left(\left(\sum y_i\right)- d\left(\sum 1\right)\right)/ \left(\sum x_i\right)
+\]
+Note that $\sum_{i=1}^N 1 = N$.
+Plug into the first partial derivative equation:
+\[ 0=\frac{\sum y_i - Nd}{\sum x_i} \sum x_i^2 + d\sum{x_i}-\sum{x_iy_i} \]
+Solve for $d$:
+\[ \frac{\sum x_i^2\sum y_i - Nd\sum x_i^2}{\sum x_i} + d\sum x_i - \sum x_iy_i \]
+\[=\sum x_i^2\sum y_i - Nd\sum x_i^2 + d\left(\sum x_i\right)^2-\sum x_i\sum x_iy_i\]
+\[Nd\sum x_i^2 - d\left(\sum x_i\right)^2 = \sum x_i^2\sum y_i - \sum x_i\sum x_iy_i\]
+\[d \left(N\sum x_i^2 - \left(\sum x_i\right)^2\right) = \sum x_i^2\sum y_i - \sum x_i\sum x_iy_i\]
+\[ d = \frac{\sum x_i^2\sum y_i - \sum x_i\sum x_iy_i}{N\sum x_i^2 - \left(\sum x_i\right)^2 } \]
+which can then be plugged back in to get $c$. I'm lazy so I used Wolfram to
+simplify the expression and got:
+\[ c = \frac{\sum x_i\sum y_i - N \sum x_iy_i}{\left(\sum x_i\right)^2-N\sum x_i^2} \]
+
+\subsubsection*{c}
+Given the gradient, the Hessian is trivially calculable as:
+\[
+	\nabla^2 J(c,d) = \begin{pmatrix}
+		\sum x_i^2 & \sum x_i \\
+		\sum x_i   & N
+	\end{pmatrix}
+\]
+If $\nabla^2 J \succcurlyeq 0$ everywhere then $J$ is convex and the first order condition ($\nabla J = 0$)
+is sufficient for both a global and local optimality. HOWEVER, this will ultimately depend
+on the $x$'s chosen, as well as the quantity $N$ chosen. For this to hold:
+\[\sum x_i^2 + N \geq \sqrt{\sum x_i^2 - 2N\sum x_i^2+4\left(\sum x_i\right)^2 + N^2}\]
 
 %------------------------------------------------------------------------------------------------------------
 
