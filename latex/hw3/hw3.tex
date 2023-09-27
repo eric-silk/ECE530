@@ -36,6 +36,7 @@
 \newcommand{\xlr}[2]{#1 \left(#2\right)}
 \newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
 \newcommand{\rank}{\mathrm{rank}}
+\newcommand{\mat}[1]{\mathbf{#1}}
 \lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
 \rhead{HW3}
 \lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
@@ -180,15 +181,126 @@ simplify the expression and got:
 \subsubsection*{c}
 Given the gradient, the Hessian is trivially calculable as:
 \[
-	\nabla^2 J(c,d) = \begin{pmatrix}
+	\nabla^2 J(c,d) = 2\begin{pmatrix}
 		\sum x_i^2 & \sum x_i \\
 		\sum x_i   & N
 	\end{pmatrix}
 \]
-If $\nabla^2 J \succcurlyeq 0$ everywhere then $J$ is convex and the first order condition ($\nabla J = 0$)
-is sufficient for both a global and local optimality. HOWEVER, this will ultimately depend
-on the $x$'s chosen, as well as the quantity $N$ chosen. For this to hold:
+If $\nabla^2 J \succcurlyeq 0$ everywhere then $J$ is convex and the first order
+condition ($\nabla J = 0$) is sufficient for both a global and local optimality.
+HOWEVER, this will ultimately depend on the $x$'s chosen, as well as the
+quantity $N$ chosen. The eigenvalues are given by\footnote{Thanks, Wolfram!}:
+\[
+	\lambda_{1,2}
+	= \frac{1}{2}
+	\left(
+	\sum x_i^2 + N \pm \sqrt{(\sum x_i^2)^2+4\sum (x_i)^2 +N^2-2N\sum x_i^2}
+	\right)
+\]
+which must be $\lambda_{1,2} \geq 0$ for the matrix to be PSD. We know that
+$N\geq1$ and $x_i\in\mathbb{R}\implies \sum x_i^2 \geq 0$, so for both
+eigenvalues to be non-negative the following must hold:
 \[\sum x_i^2 + N \geq \sqrt{\sum x_i^2 - 2N\sum x_i^2+4\left(\sum x_i\right)^2 + N^2}\]
+Failing this condition, the matrix is not PSD and we cannot assume global
+optimality (although it doesn't imply it is NOT a global optimum).
+
+\newpage
+\subsubsection*{d}
+Code is made available at the end of document.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{plots/hw3_regression.png}
+	\caption{Linear Regression on the provided data, using both the derived
+		expression (dashed orange line) and SciPy's built-in method for verification
+		(solid blue line)}
+\end{figure}
+
+
+\section*{Problem 2: Estimate with Confidence}
+\subsection*{Problem Statement}
+Suppose the true parameters of a system are described by $x=(1,1)^T$, and the measurements
+are given by:
+\[
+	\mat{y} = \underbrace{\begin{pmatrix}
+			1 & 2 \\
+			2 & 3 \\
+			3 & 4 \\
+			4 & 5
+		\end{pmatrix}}_{\coloneqq A}
+	\mat{x} + \mat{e}
+\]
+where $e\in\mathbb{R}^4$ is sampled from a multivariate Gaussian distribution with zero mean and covariance
+matrix $\mat{R}\coloneqq \textrm{diag}(0.1, 0.2, 0.3, 0.4)$. That is, $\mat{e}\sim\mathcal{N}(0, \mat{R})$.
+\subsubsection*{a}
+Write code for the following experiment:
+\begin{enumerate}
+	\item Generate an error vector $\mat{e}$ according to $\mathcal{N}(0,\mat{R})$.
+	      Compute $\mat{y}$ from it and report it.
+	\item In class we derived a formula to compute the maximum likelihood
+	      estimate $\hat{\mat{x}}$ from $\mat{y}$. Using $\mat{y}$ from the previous
+	      step, compute and report your estimate $\hat{\mat{x}}$.
+	\item The estimated error is given by $\mat{y}-\mat{A}\hat{\mat{x}}$. With
+	      $\mat{y}$ from the prior steps, compute and report:
+	      \[J(\hat{\mat{x}}) \coloneqq (\mat{y}-\mat{A}\hat{\mat{x}})^T\mat{R}^{-1}(\mat{y}-\mat{A}\hat{\mat{x}})\]
+	      Recall that we claimed (without proof) that
+	      $J(\hat{\mat{x}})\sim \chi_2^2$. Then, we have:
+	      \[\mathbb{P}\left\{J(\hat{\mat{x}})\leq 5.9915\right\}=0.95\]
+	      where $\mathbb{P}\left\{\mathcal{E}\right\}$ denotes the probability
+	      of an event $\mathcal{E}$. Concludewith a $95\%$ confidence level
+	      whether your estimate error conforms to the error model we assumed.
+\end{enumerate}
+\subsubsection*{b}
+Repeat the experiment in the prior section TEN-THOUSAND TIMES. Each time you run
+the experiment, record the value of $J(\hat{\mat{x}})$.  Plot a histogram of
+$J(\hat{\mat{x}})$. Comment qualitatively how the histogram of
+$J(\hat{\mat{x}})$ compares to the PDF of a $\chi_2^2$ random variable. Also,
+report the percentage of times you concluded that your measurement did not
+conform t the error model. Compare this fraction to your confidence interval in
+the prior portion.
+
+\subsection*{Solution}
+\subsubsection*{a}
+Again, code is made available at the end of the assignment. The output of the script is:
+\lstinputlisting[basicstyle=\small]{plots/script_output.txt}
+
+\subsubsection*{b}
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{plots/problem2_hist.png}
+	\caption{Density based histogram of 10k experiments with a 2-DoF Chi-Squared
+		PDF superimposed. Qualitatively...pretty dang good!}
+\end{figure}
+
+
+\newpage
+\section*{Code}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+\lstset{style=mystyle}
+\lstinputlisting[
+	language=Python,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw3/__main__.py}
 
 %------------------------------------------------------------------------------------------------------------
 

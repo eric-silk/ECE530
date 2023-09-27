@@ -1,0 +1,5 @@
+First y:
+[2.93953942 4.85114251 7.50790296 8.75054375]
+x hat:
+[1.1427999  0.90150926]
+J: 1.1135043299064333, Conforms to error model (with 95% confidence): True
