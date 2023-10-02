@@ -32,6 +32,9 @@
 \newtheorem{remark}{Remark}[chapter]
 \newtheorem{example}{Example}[chapter]
 
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
 \newcommand{\user}{}
 \newcommand{\xlr}[2]{#1 \left(#2\right)}
 \newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
@@ -65,7 +68,7 @@ Recall that for any function $f:\mathbb{R}\rightarrow\mathbb{R}$, its local quad
 approximation at $x^k$ is given by:
 \[
 	f^{q}(x) \coloneqq
-	f(x^k)+[\nabla f(x^k)]^T(x-x^k)+\frac{1}{2}(x-x^k)H(h^k)(x-x^k)
+	f(x^k)+[\nabla f(x^k)]^T(x-x^k)+\frac{1}{2}(x-x^k)^TH(h^k)(x-x^k)
 \]
 Assume the Hessian $H(x^k)$ is positive definite. Utilize the prior result to
 conclude that the \textit{global} minimizer of $f^q$ is given by
@@ -75,10 +78,64 @@ as defined by Newton's method.
 
 \subsection*{Solution}
 \subsubsection*{a}
-
+Simply expand the right side:
+\[
+	=\frac{1}{2}(x^TQ(x+Q^{-1}c)+c^T(Q^{-1})^TQ(x+Q^{-1}c))-\frac{1}{2}c^TQ^{-1}c
+\]
+\[
+	=\frac{1}{2}(x^TQx+x^TQQ^{-1}c+c^T(Q^{-1})^TQx+c^T(Q^{-1})^TQQ^{-1}c)-\frac{1}{2}c^TQ^{-1}c
+\]
+Noting that (per the instructor comment on Piazza) $Q^T=Q$ and that $Q^{-1}\succ0$:
+\[ =\frac{1}{2}(x^TQx+x^Tc+c^Tx+c^TQ^{-1}c)-\frac{1}{2}c^TQ^{-1}c \]
+Finally, note that $c^Tx = x^Tc \implies c^Tx+x^Tc=2c^Tx$ and thus:
+\[
+	=\frac{1}{2}x^TQx+c^Tx+\frac{1}{2}c^TQ^{-1}c-\frac{1}{2}c^TQ^{-1}c
+	=\frac{1}{2}x^TQx+c^Tx
+\]
+\qed
 \subsubsection*{b}
+By definition, if $Q\succ0$, $x^TQx>0\forall x\neq 0$ and $x^TQx=0\iff x=0$.
+As such, $\min_x x^TQx = 0$ and $\argmin_x x^TQx = 0$.
+Given the prior result, if we substitute in $x\coloneqq x^*=-Q^{-1}c$ we find:
+\[
+	\frac{1}{2}x^TQx+c^Tx
+	= \frac{1}{2}(x+Q^{-1}c)^TQ(x+Q^{-1}c)-\frac{1}{2}c^TQ^{-1}c
+\]
+\[
+	= \frac{1}{2}(-Q^{-1}c+Q^{-1}c)^TQ(-Q^{-1}c+Q^{-1}c)-\frac{1}{2}c^TQ^{-1}c
+\]
+\[
+	= \frac{1}{2}(0)^TQ(0)-\frac{1}{2}c^TQ^{-1}c
+	= -\frac{1}{2}c^TQ^{-1}c
+\]
+which is a constant. Note that the term that was dropped cannot be negative. Thus, this
+result must be the global minimum of the function.
+\qed
 \subsubsection*{c}
-
+\textcolor{red}{TODO: rework, made  mistake}
+First, note that, for a given $x^k$, $f(x^k)$ is a constant which we will call $a^k$.
+Substituting $x = x^k-[H(x^k)]^{-1}\nabla f(x^k)$ we see that the $x^k$'s cancel leaving
+us with:
+\[
+	f^q(x) = a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
+	\frac{1}{2}(-H(x^k)^{-1}\nabla f(x^k))^T
+	H(x^k)
+	(-H(x^k)^{-1}\nabla f(x^k))
+\]
+\[
+	= a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
+	\frac{1}{2}(\nabla f(x^k)^T[H(x^k)^{-1}]^T)
+	H(x^k)
+	(-H(x^k)^{-1}\nabla f(x^k))
+\]
+\[
+	= a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
+	\frac{1}{2}(\nabla f(x^k)^T
+	(H(x^k)^{-1})\nabla f(x^k))
+\]
+The constant has no effect on the location of the optimimum; i.e. $\argmin{x} f(x) = \argmin f(x)+a$
+and can thus be ignore. Then, the resulting equation matches the above form and thus the
+provided minimizer must be the global minizer.
 
 
 \section*{Problem 2: Newton's method needs a touch-up}
