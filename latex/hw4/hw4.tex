@@ -1,0 +1,131 @@
+\documentclass[11pt]{report}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{pgf,tikz}
+\usepackage[shortlabels]{enumitem}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage[margin = 1 in]{geometry}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{listings}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\newcommand{\user}{}
+\newcommand{\xlr}[2]{#1 \left(#2\right)}
+\newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
+\rhead{HW4}
+\lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
+\rfoot{Due: Wednesday, Oct 4}
+\begin{document}
+
+
+\section*{Problem 1: Proving what Newton method is up to}
+\subsection*{Problem Statement}
+Newton's method minimizes the local quadratic approximation of a function, if
+its Hessian at the current iterate is positive definite. We showed that Newton's
+method indeed finds a \textit{local} minimizer of the quadratic approximation.
+Here, we show that it finds the \textit{global} minimizer through the following
+steps.
+
+\subsubsection*{a}
+If $Q$ is any PD matrix, show that:
+\[ \frac{1}{2}x^TQx+c^Tx =  \frac{1}{2}(x+Q^{-1}c)^TQ(x+Q^{-1}c)-\frac{1}{2}c^TQ^{-1}c \]
+
+\subsubsection*{b}
+Using the prior result, argue that the function $\frac{1}{2}x^TQx+c^Tx$ is
+minimized \textit{globally} at $x^*=-Q^{-1}c$.
+
+\subsubsection*{c}
+Recall that for any function $f:\mathbb{R}\rightarrow\mathbb{R}$, its local quadratic
+approximation at $x^k$ is given by:
+\[
+	f^{q}(x) \coloneqq
+	f(x^k)+[\nabla f(x^k)]^T(x-x^k)+\frac{1}{2}(x-x^k)H(h^k)(x-x^k)
+\]
+Assume the Hessian $H(x^k)$ is positive definite. Utilize the prior result to
+conclude that the \textit{global} minimizer of $f^q$ is given by
+$x^k-[H(x^k)]^{-1}\nabla f(x^k)$. Notice that the minizer is indeed $x^{k+1}$,
+as defined by Newton's method.
+
+
+\subsection*{Solution}
+\subsubsection*{a}
+
+\subsubsection*{b}
+\subsubsection*{c}
+
+
+
+\section*{Problem 2: Newton's method needs a touch-up}
+\subsection*{Problem Statement}
+In Newton's method, if the Hessian at the current iterate $H(x^k)$ is not PD,
+then $-[H(x^k)]^{-1}\nabla f(x^k)$ may not be a descent directon. Then, we modify the Hessian to
+$H(x^k)+D^k$ where $D^k$ is a diagonal matrix with nonnegative diagonal entries. Let us design
+$D^k$ to ensure that $H(x^k)+D^k$ is PD. The following corollary of Gershgorin's circle theorem
+will prove useful.
+
+\begin{theorem}
+	If $\lambda$ is any eigenvalue of an arbitrary matrix $A\in\mathbb{R}^{n\times n}$, then
+	\[|\lambda-A{ii}|\leq\sum_{j\neq i}|A_{ij}|\]
+	for some $i=1,\ldots,n$.
+\end{theorem}
+\subsubsection*{a}
+Using this theorem, find a sufficient condition on the diagonal entries of $A$
+s.t. all eigenvalues of $A$ are positive.
+\subsubsection*{b}
+Using the prior result, find a diagonal matrix $D^k$ s.t. that all eigenvalues of $H(x^k)+D^k$
+are nonnegative, and all diagonal entries of $D^k$ are nonnegative.
+\subsubsection*{c}
+If any eigenvalue of $H(k)+D^k$ is close to zero but positive, then it is close
+to being singular and its inverse is susceptible to noise. Modify your answer in the prior section to
+ensure that all the eigenvalues are greater than $\frac{1}{2}$.
+\subsubsection*{d}
+The file applyNewtonMethod.m implements a basic newton method to the function
+\[f(x_1, x_2)\coloneqq \cos(x_1^2-2x_2)+\sin(x_1^2+x_2^2)\]
+starting from $x^0=(1.2,0.5)$. The program also draws the contour plot and the surface plot of $f$.
+\begin{enumerate}
+	\item Verify the Hessian at the starting point is NOT PD.
+	\item Does the Newton method converge? If yes, does it converge to a local
+	      minimizer of $f$?
+	\item Fill in the missing code in modifyHessian.m that takes $H(x^k)$ as
+	      input and gives $H(x^k)+D^k$ as output. Utilize your condition in part
+	      (c) to design $D^k$. Submit your code. Using your code, compute
+	      $H(x^0)+D^0$; i.e the modiied Hessian at the starting point.
+	\item Uncomment the relevant lines in applyNewtonMethod.m to run the
+	      modified Newton method. Report if the algorithm converges to a local
+	      minimizer of $f$.
+\end{enumerate}
+
+\subsection*{Solution}
+\subsubsection*{a}
+
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+
+\end{document}
