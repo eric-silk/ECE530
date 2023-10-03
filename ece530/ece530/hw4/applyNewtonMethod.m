@@ -1,6 +1,7 @@
 % Code to run a generic Newton method.
 clear all
 close all
+clc;
 
 % Function and its gradient and hessian.
 
@@ -40,7 +41,7 @@ tolerance = 1e-6;
 % Variables required for the iteration.
 shouldIterate = true;
 iterationK = 1;
-
+errorGF = 0
 while (shouldIterate)
     
     % Display the current iteration.
@@ -61,7 +62,17 @@ while (shouldIterate)
         num2str(errorGF) ...
     ))
     display(' ')
-    
+    % Added by ESilk to display if the Hessian is PD!
+    if(iterationK == 1)
+        Hk = hessf(xk(1), xk(2));
+        output_str = {"False", "True"};
+        H_is_PD = "False";
+        if(all(eig(Hk)>0))
+          H_is_PD = "True";
+        end
+        printf('H > 0: %s', H_is_PD)
+        display('')
+    end
     %pause
         % Uncomment the previous line if you want to
         % look at each new iterate.
@@ -70,9 +81,11 @@ while (shouldIterate)
         
         % Compute the current Hessian
         Hk = hessf(xk(1), xk(2));
-        
-        % Hk = modifyHessian(Hk);
-        % assert (all(eig(Hk) > 0))
+        disp('--------------------------------------------------------------')
+        eig(Hk)
+        Hk = modifyHessian(Hk);
+        eig(Hk)
+        assert (all(eig(Hk) > 0))
             % Problem 4.1: Uncomment the two lines above and include your function
             % to modify the Hessian as per your answer to part (b).
             
@@ -111,3 +124,14 @@ display(strcat( ...
     num2str(f(xk(1), xk(2))) ...
 ))
 display(' ')
+Hk = hessf(xk(1), xk(2));
+
+H_is_PD = "False";
+if(all(eig(Hk)>=0))
+  H_is_PD = "True";
+end
+
+display(strcat('Iterate is a local minimum:', ...
+  H_is_PD
+ ))
+ display(' ')

@@ -68,7 +68,7 @@ Recall that for any function $f:\mathbb{R}\rightarrow\mathbb{R}$, its local quad
 approximation at $x^k$ is given by:
 \[
 	f^{q}(x) \coloneqq
-	f(x^k)+[\nabla f(x^k)]^T(x-x^k)+\frac{1}{2}(x-x^k)^TH(h^k)(x-x^k)
+	f(x^k)+[\nabla f(x^k)]^T(x-x^k)+\frac{1}{2}(x-x^k)^TH(x^k)(x-x^k)
 \]
 Assume the Hessian $H(x^k)$ is positive definite. Utilize the prior result to
 conclude that the \textit{global} minimizer of $f^q$ is given by
@@ -112,32 +112,31 @@ which is a constant. Note that the term that was dropped cannot be negative. Thu
 result must be the global minimum of the function.
 \qed
 \subsubsection*{c}
-\textcolor{red}{TODO: rework, made  mistake}
-First, note that, for a given $x^k$, $f(x^k)$ is a constant which we will call $a^k$.
-Substituting $x = x^k-[H(x^k)]^{-1}\nabla f(x^k)$ we see that the $x^k$'s cancel leaving
-us with:
+First, we need to note that $f(x^k)$ is a constant, as $x^k$ is a parameter
+and will not change as a function of $x$. Furthermore:
+\[\argmin_{x} g(x) = \argmin_x g(x) + k\]
+i.e. addition of a constant does not change the location of the optimum.
+
+So: simply let
+\[ c'\coloneqq \nabla f,\ x' = x-x^k, Q' = H \]
+We can then see it matches the form:
+\[f(x^k) + \frac{1}{2}x'^TQ'x'+c'^Tx'\]
+Given our expression for $x'$, we can see
 \[
-	f^q(x) = a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
-	\frac{1}{2}(-H(x^k)^{-1}\nabla f(x^k))^T
-	H(x^k)
-	(-H(x^k)^{-1}\nabla f(x^k))
+	x'^* = x^*-x^k = x^k-H^{-1}\nabla f - x^k
+	= -H^{-1}\nabla f
+	= -Q'^{-1}c'
 \]
-\[
-	= a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
-	\frac{1}{2}(\nabla f(x^k)^T[H(x^k)^{-1}]^T)
-	H(x^k)
-	(-H(x^k)^{-1}\nabla f(x^k))
-\]
-\[
-	= a^k+[\nabla f(x^k)]^T[H(x^k)]^{-1}\nabla f(x^k) +
-	\frac{1}{2}(\nabla f(x^k)^T
-	(H(x^k)^{-1})\nabla f(x^k))
-\]
-The constant has no effect on the location of the optimimum; i.e. $\argmin{x} f(x) = \argmin f(x)+a$
-and can thus be ignore. Then, the resulting equation matches the above form and thus the
-provided minimizer must be the global minizer.
+which is identical to the result in the prior section.\footnote{
+	Kudos to Will V. for pointing out the expression should be massaged to match the
+	prior expression from the get-go. I had previously spent a few hours chasing my
+	tail trying to make the expressions match \textit{after} I substituted the value
+	for the optimum. This was fruitless.
+}\qed
 
 
+
+\newpage
 \section*{Problem 2: Newton's method needs a touch-up}
 \subsection*{Problem Statement}
 In Newton's method, if the Hessian at the current iterate $H(x^k)$ is not PD,
@@ -172,7 +171,7 @@ starting from $x^0=(1.2,0.5)$. The program also draws the contour plot and the s
 	\item Fill in the missing code in modifyHessian.m that takes $H(x^k)$ as
 	      input and gives $H(x^k)+D^k$ as output. Utilize your condition in part
 	      (c) to design $D^k$. Submit your code. Using your code, compute
-	      $H(x^0)+D^0$; i.e the modiied Hessian at the starting point.
+	      $H(x^0)+D^0$; i.e the modified Hessian at the starting point.
 	\item Uncomment the relevant lines in applyNewtonMethod.m to run the
 	      modified Newton method. Report if the algorithm converges to a local
 	      minimizer of $f$.
@@ -180,6 +179,42 @@ starting from $x^0=(1.2,0.5)$. The program also draws the contour plot and the s
 
 \subsection*{Solution}
 \subsubsection*{a}
+Using the geometric interpretation (borrowing heavily from the Wikipedia page\footnote{
+	\href{https://en.wikipedia.org/wiki/Gershgorin_circle_theorem\#Example}
+	{Wikipedia: Gershgorin's Circle Theorem Example (click me!)}
+}), we can note that the theorem essentially describes a bounded estimate of an
+eigenvalue, where the center of circle is located at the value of the diagonal
+element in a row ($A_{ii}$) and its radius is the sum of the magnitude of all
+other elements in the row ($\sum_{i\neq j}A_{ij}$). In order to bound the
+eigenvalue to be positive, this circe must exist solely within the RHS of the
+complex plane. Thus: Given a square matrix $A\in\mathbb{R}^{n\times n}$, a
+sufficient (albeit not necessary!) condition is:
+\[ A_{ii} > \sum_{i\neq j}|A_{ij}| \forall i \in 1,\ldots,n \]
+If we only require non-negative eigenvalues, the relationship could be relaxed
+to be ``greater than or equal to''.
+
+\subsubsection*{b}
+\[
+	D_{ii} + A_{ii} > \sum_{i\neq j}|A_{ij}|
+	\implies D_{ii} > \sum_{i\neq j}|A_{ij}| - A_{ii}
+\]
+
+\subsubsection*{c}
+\[
+	D_{ii} > \sum_{i\neq j}|A_{ij}| - A_{ii} + \frac{1}{2}
+\]
+\subsubsection*{d}
+\textbf{Note}: I used GNU Octave\footnote{\href{https://octave.org/}{GNU Octave (click me!)}}
+instead of MATLAB because I'm too lazy to get it installed and working on my machine (plus
+I'm not a fan of closed-source proprietary languages).
+\begin{enumerate}
+	\item I checked \lstinline{all(eig(Hk)>0)} for iterate 0, which reports
+	      \lstinline{false}. The matrix is not PD.
+	\item It does after 4 iterations. It is not a local minimum; again, the
+	      Hessian is evaluated to be not PSD. The necessary second-order optimality
+	      condition does not hold: it is not a local minimum.
+\end{enumerate}
+
 
 %------------------------------------------------------------------------------------------------------------
 
