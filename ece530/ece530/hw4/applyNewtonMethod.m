@@ -1,7 +1,9 @@
 % Code to run a generic Newton method.
 clear all
 close all
-clc;
+clc; history -c
+
+MAX_ITER = 100;
 
 % Function and its gradient and hessian.
 
@@ -46,22 +48,18 @@ while (shouldIterate)
     
     % Display the current iteration.
     display(strcat('Iteration # ', num2str(iterationK)))
-    display(' ')
     display(strcat( ...
         'Current values of (x,y) = [', ...
         num2str(xk'), ...
         ']'...
     ))
-       
     % Compute the norm of the gradient.
     errorGF = norm(gradf(xk(1), xk(2)), 2);
     
-    display(' ')
     display(strcat( ...
         'Current norm of gradient = ', ...
         num2str(errorGF) ...
     ))
-    display(' ')
     % Added by ESilk to display if the Hessian is PD!
     if(iterationK == 1)
         Hk = hessf(xk(1), xk(2));
@@ -71,7 +69,7 @@ while (shouldIterate)
           H_is_PD = "True";
         end
         printf('H > 0: %s', H_is_PD)
-        display('')
+        disp('')
     end
     %pause
         % Uncomment the previous line if you want to
@@ -81,10 +79,12 @@ while (shouldIterate)
         
         % Compute the current Hessian
         Hk = hessf(xk(1), xk(2));
-        disp('--------------------------------------------------------------')
-        eig(Hk)
         Hk = modifyHessian(Hk);
-        eig(Hk)
+        if(iterationK == 1)
+            display('Modified H0:')
+            display(num2str(Hk))
+        end
+        display('')
         assert (all(eig(Hk) > 0))
             % Problem 4.1: Uncomment the two lines above and include your function
             % to modify the Hessian as per your answer to part (b).
@@ -112,18 +112,16 @@ while (shouldIterate)
         shouldIterate = false;
     end
 
-    if iterationK == 100
+    if iterationK == MAX_ITER
         display('Did not converge within 100 iterations')
         break
     end
 end
 
-display(' ')
 display(strcat( ...
     'Function value at last iterate = ', ...
     num2str(f(xk(1), xk(2))) ...
 ))
-display(' ')
 Hk = hessf(xk(1), xk(2));
 
 H_is_PD = "False";
@@ -134,4 +132,3 @@ end
 display(strcat('Iterate is a local minimum:', ...
   H_is_PD
  ))
- display(' ')
