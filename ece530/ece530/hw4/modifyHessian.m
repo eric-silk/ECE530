@@ -16,7 +16,7 @@ function HTilde = modifyHessian(H)
         end
     end
 
-    D = diag(D_ii)
+    D = diag(D_ii);
     HTilde = H + D;
 end
 

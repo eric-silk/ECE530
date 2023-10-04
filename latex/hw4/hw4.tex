@@ -190,8 +190,10 @@ eigenvalue to be positive, this circle must exist solely within the RHS of the
 complex plane. Thus: Given a square matrix $A\in\mathbb{R}^{n\times n}$, a
 sufficient (albeit not necessary!) condition is:
 \[ A_{ii} > \sum_{i\neq j}|A_{ij}| \forall i \in 1,\ldots,n \]
-If we only require non-negative eigenvalues, the relationship could be relaxed
-to be ``greater than or equal to''.
+In plain english: we have to move the bounding circle via a translation of its
+center (the diagonal element of that row) to be larger than than he radius.  If
+we only require non-negative eigenvalues, the relationship could be relaxed to
+be ``greater than or equal to''.
 
 \subsubsection*{b}
 \[
@@ -213,6 +215,21 @@ I'm not a fan of closed-source proprietary languages).
 	\item It does after 4 iterations. It is not a local minimum; again, the
 	      Hessian is evaluated to be not PSD. The necessary second-order optimality
 	      condition does not hold: it is not a local minimum.
+	\item See code listing at end of the document.
+	      \[
+		      \tilde{H}^0 = \begin{bmatrix}
+			      5.3041 & 4.8041 \\
+			      4.8041 & 5.3041
+		      \end{bmatrix}
+	      \]
+	\item It does. Script output at final iteration:
+	      \begin{lstlisting}
+Iteration #17
+Current values of (x,y) = [27.4427     -28.5679]
+Current norm of gradient =1.2935e-07
+Function value at last iterate =-2
+Iterate is a local minimum:True
+\end{lstlisting}
 \end{enumerate}
 
 
