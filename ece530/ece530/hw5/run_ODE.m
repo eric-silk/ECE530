@@ -75,6 +75,7 @@ display(strcat(...
 
 disp('Processing backward Euler method.')
 
+y = x(1);
 for n = 1:N
     
     % Define F(y) such that F(y)=0 is equivalent to solving
@@ -83,10 +84,13 @@ for n = 1:N
     % to compute x(n+1). Start the NR iteratiion from the explicit 
     % Euler solution. Iterate till | F(y) | > 10^{-5}
     
-        % Insert your code here to approximately solve F(y) = 0.
-    y=1;
+    % Insert your code here to approximately solve F(y) = 0.
+    F = @(ynp1) ynp1-y-h*f(h*(n+1), ynp1);
+    F_prime = @(ynp1) 1-h*f_prime(h*(n+1), ynp1);
+    y = newton_raphson(y, F, F_prime, 1e-5, 1000);
     x(n+1) = y;
 end
+
 
 % Plot the outcome.
 plot(times, x, 'Linewidth', 2)
@@ -104,7 +108,7 @@ display(strcat(...
 %------------
 
 disp('Processing trapezoidal method.')
-
+y = x(1);
 for n = 1:N
     
     % Define F(y) such that F(y)=0 is equivalent to solving
@@ -113,8 +117,10 @@ for n = 1:N
     % to compute x(n+1). Start the NR iteratiion from the explicit 
     % Euler solution. Iterate till | F(y) | > 10^{-5}
     
-        % Insert your code here to approximately solve F(y) = 0.
-    
+    % Insert your code here to approximately solve F(y) = 0.
+    F = @(ynp1) ynp1-y-(h/2)*(f(h*n, y)+f(h*(n+1), ynp1));
+    F_prime = @(ynp1) 1-0.5*h*f_prime(h*(n+1), ynp1);
+    y = newton_raphson(y, F, F_prime, 1e-5, 1000);
     x(n+1) = y;
     
 end
@@ -137,13 +143,3 @@ legend({'Analytical', 'Forward Euler', 'Backward Euler', 'Trapezoidal'}, 'FontSi
 grid on
 hold off
 
-function xn = newton_raphson(x0, f, fprime, tol, maxiter)
-  x = x0;
-  for n = 1:maxiter
-    x = x - f(x)/fprime(x)
-    if abs(f(x)) < tol
-      break
-    endif
-  endfor
-  display('Failed to converge!')
-end
