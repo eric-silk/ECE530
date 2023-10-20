@@ -127,6 +127,9 @@ end
 
 % Plot the outcome.
 plot(times, x, 'Linewidth', 2)
+xlabel("t")
+ylabel("x")
+title("Comparison of several integration schemes")
 hold on
 
 % Compute the average error.
