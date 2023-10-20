@@ -44,6 +44,7 @@ solution_ODE = @(t) (cos(t) + sin(t));
 
 % Plot the analytical solution.
 times_cont = (0:0.01:T)';
+figure(1);
 plot(times_cont, solution_ODE(times_cont), 'k--', 'Linewidth', 2)
 hold on
 
@@ -84,3 +85,4 @@ endfor
 legend({'Analytical', 'Forward Euler, h=0.15', 'Forward Euler, h=0.30', 'Forward Euler, h=0.45'}, 'FontSize',14)
 grid on
 hold off
+print('forward_euler.eps', '-deps', '-color')

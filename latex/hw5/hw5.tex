@@ -105,7 +105,53 @@ varies with $h$. Is this method stable for the values of $h$ you've simulated?
 \subsection*{Solution}
 \subsubsection*{a}
 \subsubsection*{b}
-\subsubsection*{c}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{forward_euler}
+\end{figure}
+Mean error reported is 0.013344 for $h=0.15$, 0.027145 for $h=0.30$, and 1.2763
+for $h=0.45$. Also, it is visually apparent that the solution for $h=0.45$
+diverges, indicating numerical instability.
+\subsubsection*{c, d}
+
+\begin{lstlisting}[basicstyle=\small]
+=======================================================================
+h=0.1
+Processing analytical solution.
+Processing forward Euler method.
+Mean error =0.0088783
+Processing backward Euler method.
+Mean error =0.086862
+Processing trapezoidal method.
+Mean error =0.085593
+=======================================================================
+h=0.15
+Processing analytical solution.
+Processing forward Euler method.
+Mean error =0.013344
+Processing backward Euler method.
+Mean error =0.13035
+Processing trapezoidal method.
+Mean error =0.12856
+=======================================================================
+h=0.3
+Processing analytical solution.
+Processing forward Euler method.
+Mean error =0.027145
+Processing backward Euler method.
+Mean error =0.25538
+Processing trapezoidal method.
+Mean error =0.25064
+=======================================================================
+h=0.45
+Processing analytical solution.
+Processing forward Euler method.
+Mean error =1.2763
+Processing backward Euler method.
+Mean error =0.37076
+Processing trapezoidal method.
+Mean error =0.36708
+\end{lstlisting}
+
 
 \newpage
 \section*{Problem 2: Conjugacy is Independence}
