@@ -72,7 +72,7 @@ Please submit your code (at least for parts c and d).
 Show that the analytical solution of the DOE is given by $x(t)=\cos(t)+\sin(t)$.
 
 \subsubsection*{b}
-lot the result of numerical integration via forward Euler method with
+Plot the result of numerical integration via forward Euler method with
 $h=0.15,0.30,0.45$ over $[0,T]$ together with the analytical solution. Comment
 how the average error for forward Euler $\mathcal{E}_{FE}$ varies with $h$.  Is
 forward Euler method stable for all values of h you simulated?
@@ -104,6 +104,18 @@ varies with $h$. Is this method stable for the values of $h$ you've simulated?
 
 \subsection*{Solution}
 \subsubsection*{a}
+\[ \dot{x} = \lambda(cos(t)+sin(t))+(1-\lambda)\cos(t)-(1+\lambda)\sin(t) \]
+\[ = \lambda\cos(t)+(1-\lambda)\cos(t)+\lambda\sin(t)-(1+\lambda)\sin(t) \]
+\[=(\lambda+1-\lambda)\cos(t)+(\lambda-1-\lambda)\sin(t)\]
+\[=\cos(t)-\sin(t)\]
+And indeed:
+\[
+	\frac{\partial}{\partial t} x(t)
+	= \frac{\partial}{\partial t}(\cos(t) +\sin(t))
+	= -\sin(t)+\cos(t)
+	= \cos(t)-\sin(t)
+\]
+\qed
 \subsubsection*{b}
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{forward_euler}
@@ -111,8 +123,23 @@ varies with $h$. Is this method stable for the values of $h$ you've simulated?
 Mean error reported is 0.013344 for $h=0.15$, 0.027145 for $h=0.30$, and 1.2763
 for $h=0.45$. Also, it is visually apparent that the solution for $h=0.45$
 diverges, indicating numerical instability.
+\newpage
 \subsubsection*{c, d}
 
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{integration_0.1.eps}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{integration_0.3.eps}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{integration_0.15.eps}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{integration_0.45.eps}
+\end{figure}
+
+\newpage
 \begin{lstlisting}[basicstyle=\small]
 =======================================================================
 h=0.1
@@ -152,6 +179,9 @@ Processing trapezoidal method.
 Mean error =0.36708
 \end{lstlisting}
 
+Backward Euler and Trapezoidal both appear to be stable for all simulated
+values. Forward Euler is shown for completeness, and it blows up as expected.
+
 
 \newpage
 \section*{Problem 2: Conjugacy is Independence}
@@ -162,7 +192,7 @@ for $Q\succ0$ the prove they are linearly independent.
 \subsection*{Solution}
 Recall a sequence of vectors are linearly independent if:
 \[\alpha_0d_0+\alpha_1d_0+\ldots+\alpha_kd_k=0\]
-where not all scalars $\alpha_i=0$
+where $\{\alpha_1,\ldots,\alpha_k\} \setminus 0 \neq \varnothing $ (i.e. there's at least one non-zero $\alpha$).
 
 If $\sum_{i=0}^{n-1}\alpha_i d_i$ then for $i_0\in{0,1,\ldots,n-1}$
 \[ 0 = d^T_{i_0}Q\sum_{i=0}^{n-1}\alpha_i d_i = \alpha_{i_0}d_{i_0}^TQd_i \]
@@ -185,6 +215,42 @@ following numerical integration schemes:
 \end{enumerate}
 
 \subsection*{Solution}
+\subsubsection*{a}
+From the notes, let $f(x, t)\coloneqq \lambda x$. Because this system is
+autonomous, we can simplify and say:
+\[f(x_n, t_n) = f(x_n) = \lambda x_n\]
+\[f(x_n+hf(x_n,t_n), t_{n+1}) = f(x_n+hf(x_n))=f(x_n+h(\lambda x_n)) = \lambda(x_n+h(\lambda x_n))\]
+\[ x_{n+1}=x_n+\frac{h}{2}[\lambda x_n+\lambda(x_n+h\lambda x_n)] \]
+\[ x_{n+1}=x_n(1+\frac{h}{2}[\lambda +\lambda(1+h\lambda)]) \]
+\[ x_{n+1}=\frac{x_n}{2}(h^2\lambda^2+2h\lambda+2)\]
+\[\implies x_n = (\frac{1}{2}h^2\lambda^2+h\lambda+1)^n\]
+Which, taking the limit as $n\rightarrow\infty$, we see that it will only go to zero for
+\[-1<\frac{1}{2}h^2\lambda^2+h\lambda+1<1\]
+\[\implies-2<\frac{1}{2}(h\lambda)^2+h\lambda<0\]
+
+Considering the left term:
+\[0 < \frac{1}{2}(h\lambda)^2+h\lambda+2\]
+which holds $\forall h\lambda$. The right portion, then:
+\[\frac{1}{2}(h\lambda)^2+h\lambda < 0\]
+This is true for all $-2<h\lambda<0$.
+Recall $\lambda < 0$ and $h>0$; therefore, $h\lambda<0$ and the above equation
+is only restricted by the minimum value. Again, because $lambda$ is strictly negative, I'm going to
+relate this using the absolute value of $lambda$ (otherwise the negatives make the expression weird...):
+\[h<2/|\lambda|\]
+Conceptually, the faster the prototypical exponential function decays (more
+negative $\lambda$), the smaller our step size needs to be.
+Because this is not stable $\forall h>0$, we cannot say this is absolutely stable.
+
+\subsubsection*{b}
+Proceeding as before:
+\[ x_{n+1}=x_n+h\lambda (x_n+h\lambda x_n) = x_n(1+h\lambda+(h\lambda)^2) \]
+So for stability:
+\[|1+h\lambda+(h\lambda)^2|<1 \implies -1<1+h\lambda+(h\lambda)^2<1\]
+The left relationship is true $\forall h\lambda\in\mathbb{R}\implies \forall
+	h\in\mathbb{R}$. The right, however, is only true for:
+\[-1<h\lambda<0\]
+Which does not hold $\forall h\in\mathbb{R}$. Therefore, the method is not absolutely stable.
+
 
 \newpage
 \section*{Code}
@@ -210,15 +276,28 @@ following numerical integration schemes:
 	showtabs=false,
 	tabsize=2
 }
+
+\subsection*{``run\_ODE.m''}
 \lstset{style=mystyle}
 \lstinputlisting[
 	language=MATLAB,
 	basicstyle=\tiny
-]{../../ece530/ece530/hw4/modifyHessian.m}
+]{../../ece530/ece530/hw5/run_ODE.m}
+
+\newpage
+\subsection*{``forward\_euler\_stability.m''}
+\lstset{style=mystyle}
 \lstinputlisting[
 	language=MATLAB,
 	basicstyle=\tiny
-]{../../ece530/ece530/hw4/applyNewtonMethod.m}
+]{../../ece530/ece530/hw5/forward_euler_stability.m}
+
+\newpage
+\subsection*{``newton\_raphson.m''}
+\lstinputlisting[
+	language=MATLAB,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw5/newton_raphson.m}
 %------------------------------------------------------------------------------------------------------------
 \newpage
 \printbibliography
