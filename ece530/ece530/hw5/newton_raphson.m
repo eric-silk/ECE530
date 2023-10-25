@@ -9,13 +9,12 @@ function xn = newton_raphson(x0, func, deriv, tol, max_iter)
     fprime = deriv(x);
     dx = fx/fprime;
     if isnan(dx)
-      display("NaN encountered, halting!")
       xn = x;
       return;
     endif
     tmp = x-dx;
     if (isnan(tmp))
-      display("NaN would be produced, halting!")
+  
       xn = x;
       return;
     endif

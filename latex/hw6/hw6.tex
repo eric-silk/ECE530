@@ -1,0 +1,141 @@
+\documentclass[11pt]{report}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{pgf,tikz}
+\usepackage[shortlabels]{enumitem}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage[margin = 1 in]{geometry}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{biblatex}
+\addbibresource{hw5.bib}
+\usepackage{listings}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\user}{}
+\newcommand{\xlr}[2]{#1 \left(#2\right)}
+\newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
+\rhead{HW5}
+\lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
+\rfoot{Due: Friday, Oct. 20th}
+\begin{document}
+
+
+\section*{Trapezoid o' trapezoid!}
+\subsection*{Problem Statement}
+Consider the scalar ordinary differential equation (ODE) $\dot{x}=f(t,x(t))$
+starting from $x_0=x(0)$. Then, the trajectory $x(t)$ over $t\in[0,T]$ satisfies:
+\[x(t_{n+1})=x(t_n)+\int_{\tau=t_n}^{\tau=t_{n+1}}f(\tau,x(\tau))d\tau\]
+for $t_n=nh$. Let $g(\tau)\coloneqq f(\tau,(x(\tau)))$. Assume that $g$ is $\mathcal{C}^2$
+over $[0,T]$.
+
+\subsubsection*{a}
+If $0\leq a\leq b\leq T$, then prove that $g$ satisfies:
+\[
+	\int_{a}^{b} g(\tau)d\tau
+	= \frac{1}{2}(b-a)[g(a)-g(b)]
+	- \frac{1}{2}\int_{a}^{b}\left[
+		\left(\frac{b-a}{2}\right)^2 -
+		\left(\tau - \frac{a+b}{2}\right)^2
+		\right]
+	g''(\tau)d\tau
+\]
+\textbf{Hint}: Use integration by parts.
+\subsubsection*{b}
+Then, use the identity in part a) to prove that there exists a constant $M$ s.t.
+\[
+	\bigg|
+	\int_{a}^{b}g(\tau)d\tau - \frac{1}{2}(b-a)[g(a)+g(b)]
+	\bigg|
+	\leq M\frac{(b-a)^3}{12}
+\]
+
+\subsubsection*{c}
+Deduce that the local truncation error of the trapezoidal method is $\mathcal{O}(h^3)$;
+i.e.:
+\[
+	x(t_{n+1})=x(t_n) + \frac{h}{2}[f(t_n,x(t_n))+f(t_{n+1},x(t_{n+1}))]
+	+ \mathcal{O}(h^3)
+\]
+
+\subsubsection*{d (\textit{optional})}
+Under possibly additional assumptions, prove that the global error for the trapezoidal
+method is $\mathcal{O}(h^2)$; i.e., there exists some constant $C$ s.t.
+\[|x(t_n)-x_n|\leq Ch^2\forall t\in[0, T]\]
+
+
+\subsection*{Solution}
+\subsubsection*{a}
+\subsubsection*{b}
+\subsubsection*{c}
+\subsubsection*{d}
+
+\newpage
+\section*{Problem 2: Deriving Adams-Moulton, not 1, but 2}
+\subsection*{Problem Statement}
+Consider a scalar ODE $\dot{x}(t)=f(t,x(t))$ with $x(0)$ as the initial point.
+With a step-size of $h>0$ and $t_n=nh$ for $n\geq 0$ we have:
+\[ x(t_{n+1}) = x(t_n)+\int_{\tau=t_n}^{\tau=t_{n+1}} f(\tau, x(\tau))d\tau \]
+
+Adams-Moulton seeks to compute $x_n$ recursively as:
+\begin{equation}
+	x_{n+1} = x_n+\int_{\tau=t_n}^{\tau=t_{n+1}} g(\tau)d\tau
+	\label{eq:first}
+\end{equation}
+where $g(\tau)$ is a polynomial approximation to $f(\tau,x(\tau))$. Define $G_n\coloneqq f(t_n, x_n)$.
+Then, the AM(2) method seeks a quadratic approximation to $g$ that takes the values
+\begin{equation}
+	g(t_{n-1})=G_{n-1},\ g(t_n)=G_n,\ g(t_{n+1})=G_{n+1}
+	\label{eq:second}
+\end{equation}
+Consider $g$ of the form
+\begin{equation}
+	g(\tau) = G_{n-1}L_{n-1}(\tau)+G_nL_n(\tau)+G_{n+1}L_{n+1}(\tau)
+	\label{eq:third}
+\end{equation}
+where $L$'s are the Legendre polynomials defined by:
+\[
+	L_{n-1}(\tau)\coloneqq \frac{(\tau-t_n)(\tau-t_{n+1})}{(t_{n-1}-t_n)(t_{n-1}-t_{n+1})},\
+	L_{n}  (\tau)\coloneqq \frac{(\tau-t_{n-1})(\tau-t_{n+1})}{(t_{n}-t_{n-1})(t_{n}-t_{n+1})},\
+	L_{n+1}(\tau)\coloneqq \frac{(\tau-t_{n-1})(\tau-t_{n})}{(t_{n+1}-t_{n-1})(t_{n+1}-t_{n})}
+\]
+
+\subsubsection*{a}
+Verify that $g$ defined in (\ref{eq:third}) satisfies (\ref{eq:second}).
+\subsubsection*{b}
+Compute $\int_{\tau=t_n}^{\tau=t_{n+1}}L_{k}(\tau)d\tau$ for $k=n-1,n,n+1$.
+
+\subsection*{Solution}
+
+
+%------------------------------------------------------------------------------------------------------------
+
+\end{document}
