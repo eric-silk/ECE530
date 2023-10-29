@@ -21,7 +21,7 @@
 \usepackage{graphicx}
 \usepackage{psfrag}
 \usepackage{biblatex}
-\addbibresource{hw5.bib}
+\addbibresource{hw6.bib}
 \usepackage{listings}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -61,7 +61,7 @@ over $[0,T]$.
 If $0\leq a\leq b\leq T$, then prove that $g$ satisfies:
 \[
 	\int_{a}^{b} g(\tau)d\tau
-	= \frac{1}{2}(b-a)[g(a)-g(b)]
+	= \frac{1}{2}(b-a)[g(a)+g(b)]
 	- \frac{1}{2}\int_{a}^{b}\left[
 		\left(\frac{b-a}{2}\right)^2 -
 		\left(\tau - \frac{a+b}{2}\right)^2
@@ -94,9 +94,49 @@ method is $\mathcal{O}(h^2)$; i.e., there exists some constant $C$ s.t.
 
 \subsection*{Solution}
 \subsubsection*{a}
+Recall that IBP is:
+\[ \int_a^b udv = uv\bigg|_a^b - \int_a^b vdu \]
+Letting $u\coloneqq=g(\tau)$ and $vd\tau$, then:
+\[ \int_a^bg(\tau)d\tau = g(\tau)\tau\bigg|_a^b - \int_a^b\tau g'(\tau)d\tau \]
+Using IBP again for the right-most term, this time letting $u=g'(\tau)$ and $dv=\tau d\tau$:
+\[
+	= g(\tau)\tau\bigg|_a^b - \left(
+	\left[g'(\tau)-\frac{1}{2}\tau^2\right]_a^b
+	- \int_a^b\tau g''(\tau)d\tau
+	\right)
+\]
+\[
+	= g(\tau)\tau\bigg|_a^b -
+	\left[g'(\tau)-\frac{1}{2}\tau^2\right]_a^b
+	+ \int_a^b\tau g''(\tau)d\tau
+\]
+
+
+
+I used \cite{Bender} for reference.
 \subsubsection*{b}
+Re-arrange the identity to:
+\[
+	\int_a^bg(\tau)d\tau - \frac{1}{2}(b-a)[g(a)+g(b)] = -\int_a^b\left[
+		\left(\frac{b-a}{2}\right)^2-\left(\tau - \frac{a+b}{2}\right)^2
+		\right] g''(\tau)d\tau
+\]
+Note that, because $g(\tau)$ is $\mathcal{C}^2$ over $[0,T]$ (a bounded domain),
+this implies that $|g''(\tau)|$ is bounded.
+Using the power of foresight, let us define $M$ as follows:
+\[M = 2g''\left(\argmax_{\tau\in[0,T]}|g''(\tau)|\right)\]
+Or, in English, the most ``extreme'' value that $g''$ can take (rather than the
+maximum or minimum). Then:
+$\int_{}^{max}$
+
 \subsubsection*{c}
 \subsubsection*{d}
+Globally, the error will be the sum of each local interval; i.e.:
+\[
+	\int_{a}^{b}g(\tau)d\tau = \int_{a_0}^{a_1}g(\tau)d\tau + \ldots + \int_{a_{n}}^{b}g(\tau)d\tau
+\]
+The error on a subinterval
+\[\int_{a_{i}}^{a_{i+1}} g(\tau)d\tau= -\frac{a_{i+1}-a_{i}}{12}g''(\tau)\]
 
 \newpage
 \section*{Problem 2: Deriving Adams-Moulton, not 1, but 2}
@@ -133,9 +173,18 @@ Verify that $g$ defined in (\ref{eq:third}) satisfies (\ref{eq:second}).
 \subsubsection*{b}
 Compute $\int_{\tau=t_n}^{\tau=t_{n+1}}L_{k}(\tau)d\tau$ for $k=n-1,n,n+1$.
 
+\subsection*{c}
+Plug your results from part (b) into the relation
+\[
+	x_{n+1} = x_n + \sum_{k=n-1}^{n+1}G_k\int_{\tau=t_n}^{\tau=t_{n+1}}L_k(\tau)d\tau
+\]
+Replace $G_k$ is a polynomial approximation to $f(\tau, x(\tau))$.
+
 \subsection*{Solution}
 
 
 %------------------------------------------------------------------------------------------------------------
 
+\newpage
+\printbibliography
 \end{document}
