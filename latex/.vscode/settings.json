@@ -1,0 +1,9 @@
+{
+    "editor.autoIndent": "full",
+    "[latex]": {
+        "editor.formatOnPaste": false,
+        "editor.suggestSelection": "recentlyUsedByPrefix",
+        "editor.wordBasedSuggestions": false,
+        "editor.acceptSuggestionOnCommitCharacter": false
+    }
+}
