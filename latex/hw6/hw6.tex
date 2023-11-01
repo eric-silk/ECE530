@@ -118,19 +118,24 @@ The whole left term evaluated at the end points reduces to $0$, so:
 IBP again using:
 \[u = a+b-2\tau \implies du = -2d\tau\]
 \[dv = g'(\tau)d\tau \implies v=g(\tau)\]
-\[ = (a+b-2b)g(b)-\left[(a+b-2a)g(a)\right]+2\int_{a}^{b}g(\tau)d\tau \]
-\[ = (a-b)(g(a)+g(b)) + 2\int_{a}^{b}g(\tau)d\tau\]
-Hokay. Now we substitute back into the original equation...
+\[ =-\left(\left[(a+b-2\tau)g(\tau)\right]_a^b - \int_{a}^{b}g(\tau)(-2d\tau)\right) \]
+\[ =-\left(\left[(a+b-2b)g(b)-(a+b-2a)g(a)\right] - \int_{a}^{b}g(\tau)(-2d\tau)\right) \]
+\[ = -\left((a-b)(g(b)+g(a)) - \int_{a}^{b}g(\tau)(-2d\tau)\right)\]
+\[ = (b-a)(g(b)+g(a)) + \int_{a}^{b}g(\tau)(-2d\tau)\]
+\[ = (b-a)(g(b)+g(a)) -2 \int_{a}^{b}g(\tau)d\tau\]
+Hokay, now sub this integral back into the original equation:
 \[
-	\int_{a}^{b}g(\tau)d\tau = \frac{1}{2}(b-a)(g(a)+g(b))-\frac{1}{2}
-	\left[ (a-b)(g(a)+g(b)) + 2\int_{a}^{b}g(\tau)d\tau \right]
+	\int_a^b g(\tau)d\tau = \frac{1}{2}(b-a)\left[g(a)+g(b)\right] - \frac{1}{2}\left(
+	(b-a)(g(b)+g(a)) -2 \int_{a}^{b}g(\tau)d\tau
+	\right)
 \]
 \[
-	\int_{a}^{b}g(\tau)d\tau = \int_a^bg(\tau)d\tau
+	\int_a^b g(\tau)d\tau = \frac{1}{2}(b-a)\left[g(a)+g(b)\right] - \frac{1}{2}
+	(b-a)(g(b)+g(a)) + \int_{a}^{b}g(\tau)d\tau
 \]
+Cancel the the terms $a,b,g(a),g(b)$ and we're left with:
+\[\int_{a}^{b}g(\tau)d\tau = \int_{a}^{b}g(\tau)d\tau\]
 \qed
-
-\textcolor{red}{TODO come back and figure out the sign shenanigans}
 
 \subsubsection*{b}
 Based on the proof provided by \cite{Heck_Schut}.
@@ -244,9 +249,59 @@ Using Wolfram (using a,b, and c instead of $t_{n-1},t_n,t_{n+1}$ and then making
 the appropriate replacements...), we find:
 \[\int_{t_n}^{t_{n+1}}L_{n-1}(\tau)d\tau = \frac{(t_n-t_{n+1})^3}{6(t_{n-1}-t_n)(t_{n-1}-t_{n+1})}\]
 \[\int_{t_n}^{t_{n+1}}L_{n}(\tau)d\tau = \frac{(t_{n}-t_{n+1})(3t_{n-1}-2t_{n}-t_{n+1})}{6(t_n-t_{n-1})}\]
-\[\int_{t_n}^{t_{n+1}}L_{n+1}(\tau)d\tau = \frac{(t_{n}-t_{n+1})(3t_{n-1}-t_{n}-2t_{n+1})}{6(t_{n-1}-t_{n+1})}\]
+\[\int_{t_n}^{t_{n+1}}L_{n+1}(\tau)d\tau = -\frac{(t_{n}-t_{n+1})(3t_{n-1}-t_{n}-2t_{n+1})}{6(t_{n-1}-t_{n+1})}\]
+Note that:
+\[t_n-t_{n-1} = h,\ t_{n+1}-t_{n} = h,\ t_{n+1}-t_{n-1} = t_{n+1}-t_n+t_n-t_{n-1}=2h\]
 
+\[
+	\frac{(t_n-t_{n+1})^3}{6(t_{n-1}-t_n)(t_{n-1}-t_{n+1})}
+	= \frac{(-h)^3}{6(-h)(-2h)}
+	= \frac{-h}{12}
+\]
+The next two are slightly trickier, consider $\int L_n$:
+\[\frac{(t_{n}-t_{n+1})(3t_{n-1}-2t_{n}-t_{n+1})}{6(t_n-t_{n-1})}\]
+The left term in the numerator is $-h$, the denominator is $6h$. The right numerator is:
+\[3t_{n-1}-2t_n-t_{n+1}= -(t_{n+1}+2t_n-3t_{n-1}) = -(t_{n+1}-t_n+t_n+2t_n-3t_{n-1})\]
+\[= -(t_{n+1}-t_n+3t_n-3t_{n-1}) = -(h+3h) = -4h\]
+Recombining we get:
+\[= \frac{-h(-4h)}{6h} = \frac{2h}{3}\]
+Finally, consider the last integral:
+\[-\frac{(t_{n}-t_{n+1})(3t_{n-1}-t_{n}-2t_{n+1})}{6(t_{n-1}-t_{n+1})}\]
+Starting with the top-right portion of the numerator:
+\[
+	3t_{n-1}-t_n-2t_{n+1}
+	= -(2_{n+1}+t_n-3t_{n-1})
+	= -(2_{n+1}-2t_n+3t_n-3t_{n-1})
+\]
+\[ =-(2h+3h) = -5h \]
+The left term of the numerator becomes $-h$, and the denominator becomes $-12h$, so the full fraction becomes:
+\[ -\frac{-h(-5h)}{-12h} = \frac{5h}{12} \]
 
+\subsubsection*{c}
+\[
+	x_{n+1}=x_n+\sum_{k=n-1}^{n+1}G_k\int_{\tau=t_n}^{\tau=t_{n+1}}L_k(\tau)d\tau
+	= x_n
+	+ f(t_{n-1}, x_{n-1})\left(\frac{-h}{12}\right)
+	+ f(t_{n}, x_{n})\left(\frac{2h}{3}\right)
+	+ f(t_{n+1}, x_{n+1})\left(\frac{5h}{12}\right)
+\]
+\[
+	x_{n+1}=x_n+\sum_{k=n-1}^{n+1}G_k\int_{\tau=t_n}^{\tau=t_{n+1}}L_k(\tau)d\tau
+	= x_n
+	+\frac{h}{12}\left(5f(t_{n+1}, x_{n+1}) + 8f(t_n,x_n) - f(t_{n-1}, x_{n-1})\right)
+\]
+Which indeed matches (with a change in indexing convention) the Wikipedia page about Linear multi-step methods.
+\subsubsection*{d}
+Based upon the prior homework, we note that for the Trapezoidal rule (i.e.
+AM(1)) and Backward Euler (i.e. AM(0)) with one-step fixed-point iteration, we substitute
+$x_{n+1} = x_n+hf(x_n, t_n)$
+So:
+\[
+	x_{n+1}= x_n
+	+\frac{h}{12}\left(5f(t_{n+1}, x_n+hf(x_n, t_n)) + 8f(t_n,x_n) - f(t_{n-1}, x_{n-1})\right)
+\]
+Use your desired solver (I'd probably go with Newton-Raphson) to solve the sub-problems. The only other quirk is
+how to initialize $x_{n-1}$ for step $0$. I'd either set it to zero or set it equal to $x_n$.
 %------------------------------------------------------------------------------------------------------------
 
 \newpage
