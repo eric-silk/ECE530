@@ -1,0 +1,118 @@
+\documentclass[11pt]{report}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{pgf,tikz}
+\usepackage[shortlabels]{enumitem}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage[margin = 1 in]{geometry}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{biblatex}
+\addbibresource{hw7.bib}
+\usepackage{listings}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\user}{}
+\newcommand{\xlr}[2]{#1 \left(#2\right)}
+\newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
+\rhead{HW7}
+\lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
+\rfoot{Due: Wed. November 8}
+\begin{document}
+
+
+\section*{Problem 1: Determinants can be floppy}
+\subsection*{Problem Statement}
+Consider a non-singular matrix $\mat{A}\in\mathbb{R}^{n\times n}$, given by
+\[
+	\mat{A} = \begin{pmatrix}
+		a_{11} & a_{12} & \cdots & a_{1n} \\
+		a_{21} & a_{22} & \cdots & a_{2n} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		a_{n1} & a_{n2} & \cdots & a_{nn}
+	\end{pmatrix}
+\]
+Let us compute its determinant using the following formula:
+\[\det(\mat{A}) \coloneqq \sum_{k=1}^{n}(-1)^ka_{1k}\det(\widehat{\mat{A}}^{1k})\]
+where $\widehat{\mat{A}}^{1k}\in\mathbb{R}^{(n-1)\times(n-1)}$ is the matrix
+obtained by removing the first row and $k$-th column of $\mat{A}$.
+
+\subsubsection*{a}
+Suppose for $\mat{A}\in\mathbb{R}^{n\times n}$, computing $\det(\mat{A})$ using the above
+formula takes $y_n$ flops. Find the relationship between $y_n$ and $y_{n-1}$. Assume that
+negating a number does not require  a flop.
+
+\subsubsection*{b}
+Use your recurrence relation in (a) to prove that $n!\leq y_n\leq \frac{1}{2}(n+1)!$ for
+each $n\geq 5$. Here, $z!=z(z-1)(z-2)\ldots1$ denotes the factorial of $z$.
+
+\subsubsection*{c}
+Estimate how much time your computer takes for one flop. Please submit your code.
+
+\subsubsection*{d}
+
+\subsection*{Solution}
+\subsubsection*{a}
+
+\subsubsection*{b}
+
+\subsection*{c}
+
+\newpage
+
+\section*{Problem 2: It Schur is Nice}
+\subsection*{Problem Statement}
+
+\subsubsection*{a}
+
+\subsubsection*{b}
+
+\subsection*{c}
+
+
+\subsection*{Solution}
+\subsubsection*{a}
+
+\subsubsection*{b}
+
+\subsubsection*{c}
+
+\subsubsection*{d}
+
+\section*{Problem 3: A Plethora of Inversion Methods}
+\subsection*{Problem Statement}
+
+\subsection*{Solution}
+%------------------------------------------------------------------------------------------------------------
+
+\newpage
+\printbibliography
+\end{document}
