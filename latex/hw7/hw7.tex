@@ -52,14 +52,14 @@
 \section*{Problem 1: Determinants can be floppy}
 \subsection*{Problem Statement}
 Consider a non-singular matrix $\mat{A}\in\mathbb{R}^{n\times n}$, given by
-\[
+\begin{equation}
 	\mat{A} = \begin{pmatrix}
 		a_{11} & a_{12} & \cdots & a_{1n} \\
 		a_{21} & a_{22} & \cdots & a_{2n} \\
 		\vdots & \vdots & \ddots & \vdots \\
 		a_{n1} & a_{n2} & \cdots & a_{nn}
 	\end{pmatrix}
-\]
+\end{equation}
 Let us compute its determinant using the following formula:
 \[\det(\mat{A}) \coloneqq \sum_{k=1}^{n}(-1)^ka_{1k}\det(\widehat{\mat{A}}^{1k})\]
 where $\widehat{\mat{A}}^{1k}\in\mathbb{R}^{(n-1)\times(n-1)}$ is the matrix
@@ -78,6 +78,16 @@ each $n\geq 5$. Here, $z!=z(z-1)(z-2)\ldots1$ denotes the factorial of $z$.
 Estimate how much time your computer takes for one flop. Please submit your code.
 
 \subsubsection*{d}
+\begin{enumerate}
+	\item Using your answer in (c), estimate how long it will take to compute
+	      $\det(\mat{A})$ for the provided equation, using $n=100$. Answer in number
+	      of years! The following Sterling's approximation may be useful:
+	      \[n! \approx \sqrt{2\pi n}\left(\frac{n}{e}\right)^n\]
+	\item Based on your asnwer in (i), will you use this method to compute the
+	      determinant $100\times 100$ matrix? By the way, the age of the universe is
+	      13.8 billion years.
+
+\end{enumerate}
 
 \subsection*{Solution}
 \subsubsection*{a}
@@ -90,12 +100,33 @@ Estimate how much time your computer takes for one flop. Please submit your code
 
 \section*{Problem 2: It Schur is Nice}
 \subsection*{Problem Statement}
+Now, let's compute the determinant of $\mat{A}\in\mathbb{R}^{n\times n}$ differently.
+Write $\mat{A}$ as
+\begin{equation}
+	\mat{A} = \begin{pmatrix}
+		a_{11}       & \mat{A}_{12} \\
+		\mat{A}_{21} & \mat{A}_{22}
+	\end{pmatrix}
+\end{equation}
+
+where $\mat{A}_{22}\in\mathbb{R}^{(n-1)\times(n-1)}$. Other blocks have
+appropriate dimensions.  If $a_{11}\neq 0$, then
+\[ \det(\mat{A})=a_{11}\det(\mat{A}_{22}-\mat{A}_{21}a_{11}^{-1}\mat{A}_{12}) \]
+where $\mat{A}_{22}-\mat{A}_{21}a_{11}^{-1}\mat{A}_{12}$ is non-singular.
+Suppose you can swap two rows without any FLOPs, but such a swap changes the
+sign of the determinant.
 
 \subsubsection*{a}
+If computing $\det{A}$ using (2) takes $z_n$ flops, find a recurrance relation
+between $z_n$ and $z_{n-1}$.
 
 \subsubsection*{b}
+Find the dominant term in $n$ in the expression of $z_n$ as a function of $n$;
+i.e. without a recurrence relation.
 
 \subsection*{c}
+Will you use (2) to compute the determinant of a $100\times 100$ matrix? Answer
+logically.
 
 
 \subsection*{Solution}
@@ -109,6 +140,22 @@ Estimate how much time your computer takes for one flop. Please submit your code
 
 \section*{Problem 3: A Plethora of Inversion Methods}
 \subsection*{Problem Statement}
+Suppose $\mat{A}\in\mathbb{R}^{n\times n}$ is nonsingular. Then, the inverse of
+$\mat{A}$ ca be computed elementwise as
+\[ \left[\mat{A}^{-1}\right]_{ij} = (-1)^{i+j}\frac{\det(\mat{B}_ij)}{\mat{A}} \]
+where $\mat{B}_{ij}$ is the matrix obtained by removing $j-$th row and the
+$i$-th column of $\mat{A}$ Count the number of FLOPs (only dominant terms of
+$n$) required to compute the inverse of $\mat{A}$ using the above equation. For
+computing determinants, assume that you are using the scheme in problem 2.
+Compare it with the number of FLOPs you will take to compute an LU decomposition
+followed by forward and backward substitutions to compute $\mat{A}^{-1}$.
+
+\textit{
+	\textbf{Hint}: To compute $\mat{A}^{-1}$ using LU decompositions and
+	forward/backward substitutions, you can calculate the columns $x_1,\ldots,x_n$
+	of $\mat{A}^{-1}$ by solving $\mat{A}x_i=\mat{e}_i$ where $\mat{e}_i\in\mathbb{R}^n$
+	is a vector whose elements are all zeros except its $i$-th element that is unity.
+}
 
 \subsection*{Solution}
 %------------------------------------------------------------------------------------------------------------
