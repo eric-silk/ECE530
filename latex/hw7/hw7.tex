@@ -91,8 +91,58 @@ Estimate how much time your computer takes for one flop. Please submit your code
 
 \subsection*{Solution}
 \subsubsection*{a}
+Let $F(n)\coloneqq y_n$, i.e. the FLOP count of this calculation as a function
+of $n$.  We can see that, for a given sub-term in the summation we have:
+\[(-1)^ka_{1k}\det(\widehat{\mat{A}}^{1k})\]
+The sub-matrix determinant will take $F(n-1)$ FLOPs. The negation will take
+none. The multiplication of $a_{1k}$ and the sub-determinant will take one.
+Each sub-term will thus take $F(n-1)+1$ FLOPS, and there are $n$ sub-terms.
+Then, the summations will require $n-1$ additional flops. So, we find:
+\[F(n) = n(F(n-1)+1)+(n-1) = nF(n-1)+2n-1\]
+Note that $F(0)= F(1) = 0$, so:
+\begin{table}[h]
+	\begin{center}
+
+		\begin{tabular}{l|lllllllll}
+			$n$    & 1 & 2 & 3  & 4  & 5   & 6    & 7     & 8      & 9      \\ \hline
+			$F(n)$ & 0 & 3 & 14 & 63 & 324 & 1955 & 13698 & 109599 & 986408
+		\end{tabular}
+	\end{center}
+\end{table}
 
 \subsubsection*{b}
+\[ F(n) = nF(n-1)+2n-1 \]
+\[ = n(n-1)F(n-2)+n(n-1) \]
+\[ = n((n-1)((n-1)(\ldots)+n-2)+n-2)+n-1\]
+\[ = 2n-1+n(2(n-1)-1)+n(n-1)(2(n-2)-1)+\ldots+n!\]
+\[ < 2n+2n(n-1)+2n(n-1)(n-2)+\ldots2n!+n!\]
+\[ = 2(n+n(n-1)+\ldots+n!/2)+3n!\]
+\[ <2\left(\frac{n!}{(n-1)!}+\frac{n!}{(n-2)!}+\ldots+\frac{n!}{2!}\right)+3n!\]
+Then, note that:
+\[\frac{2n!}{k!}\leq \frac{n!}{(k-1)!}\forall k\geq 2\]
+and thus:
+\[\frac{n!}{(n-1)!}+\frac{n!}{(n-2)!}+\frac{n!}{(n-3)!}+\ldots+\frac{n!}{2!}\]
+\[\leq \frac{n!}{(n-2)!}+\frac{n!}{(n-2)!}+\frac{n!}{(n-3)!}+\ldots+\frac{n!}{2!}\]
+\[\leq \frac{n!}{(n-3)!}+\frac{n!}{(n-3)!}+\ldots+\frac{n!}{2!}\]
+\[\leq \frac{n!}{(n-4)!}+\ldots+\frac{n!}{2!}\]
+\[\ldots\]
+\[\leq \frac{n!}{2!}+\frac{n!}{2!}\]
+\[\leq n!\]
+So:
+\[
+	F(n)
+	= nF(n-1)+2n-1
+	< 2\left(\frac{n!}{(n-1)!}+\frac{n!}{(n-2)!}+\ldots+\frac{n!}{2!}\right)+3n!
+\]
+\[\leq 2n!+3n! = 5n!\]
+Furthermore, note that for $n\geq5$:
+\[5n! \leq \frac{1}{2}(n+1)!\]
+as
+
+Referenced \cite{DeterminantStackOverflow} for deriviation.\footnote{There's
+	something amusing about a recursive algorithm post on a website called
+	``StackOverflow''...}
+
 
 \subsection*{c}
 
@@ -117,7 +167,7 @@ Suppose you can swap two rows without any FLOPs, but such a swap changes the
 sign of the determinant.
 
 \subsubsection*{a}
-If computing $\det{A}$ using (2) takes $z_n$ flops, find a recurrance relation
+If computing $\det{A}$ using (2) takes $z_n$ flops, find a recurrence relation
 between $z_n$ and $z_{n-1}$.
 
 \subsubsection*{b}
@@ -131,18 +181,37 @@ logically.
 
 \subsection*{Solution}
 \subsubsection*{a}
+Applying the scalar divison to one of the matrices will require $n-1$
+operations.The matrix-matrix multiplication is really the outer product of a
+$(n-1)\times 1$ and $1\times(n-1)$ vector, requiring $(n-1)\times(n-1)=(n-1)^2$
+operations. Finally, the subtraction of Matrices will require $(n-1)^2$ operations.
+The result will be $n(n-1)^2+(n-1)^2=(n+1)(n-1)^2$ to produce an argument to the
+next determinant, and the result must be multiplied once more.
+\[ F(n) = F(n-1) + (n+1)(n-1)^2 + 1 \]
 
 \subsubsection*{b}
+Ignoring the $F(n-1)$ term, the resulting expression becomes:
+\[F(n) = (n+1)(n-1)^2+1 = n^3-n^2-n+2\]
+so the algorithm is $\mathcal{O}(n^3)$.
 
 \subsubsection*{c}
+Sure, for a $100\times100$ matrix, $n=100\implies n^3=1,000,000$. Given that
+the bulk of the expense are matrix-matrix operations (which are indeed highly
+parallelizable), I'd feel comfortable quoting the ``theoretical'' maximum FLOPS
+performance of my GPU, an nVidia RTX 2070 Super at 283.2 GFLOPS for FP64.
+This matrix would require $\approx \frac{100^3}{283.2*10^9}=3.53$ microseconds
+to calculate.
 
-\subsubsection*{d}
+Of course, this algorithm isn't perfectly parallelizable, but even an order of
+magnitude slower would be 3.53 milliseconds...I'm probably not worried about
+that unless I'm finding the determinants of LOTS of these matrices.
 
+\newpage
 \section*{Problem 3: A Plethora of Inversion Methods}
 \subsection*{Problem Statement}
 Suppose $\mat{A}\in\mathbb{R}^{n\times n}$ is nonsingular. Then, the inverse of
 $\mat{A}$ ca be computed elementwise as
-\[ \left[\mat{A}^{-1}\right]_{ij} = (-1)^{i+j}\frac{\det(\mat{B}_ij)}{\mat{A}} \]
+\[ \left[\mat{A}^{-1}\right]_{ij} = (-1)^{i+j}\frac{\det(\mat{B}_ij)}{\det{\mat{A}}} \]
 where $\mat{B}_{ij}$ is the matrix obtained by removing $j-$th row and the
 $i$-th column of $\mat{A}$ Count the number of FLOPs (only dominant terms of
 $n$) required to compute the inverse of $\mat{A}$ using the above equation. For
