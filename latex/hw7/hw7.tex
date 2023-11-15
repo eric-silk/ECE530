@@ -144,7 +144,34 @@ Referenced \cite{DeterminantStackOverflow} for deriviation.\footnote{There's
 	``StackOverflow''...}
 
 
-\subsection*{c}
+\subsubsection*{c}
+My script output (see the ``Code'' section at the end) produces the following output:
+\begin{lstlisting}[basicstyle=\small]
+Python list, naive for loop: 5.54E+07 FLOPS, or 1.81E-08 seconds for 1 FLOP
+Time for 100x100 Matrix: 5.337560113947608e+142 years
+NumPy array, naive for loop: 5.47E+07 FLOPS, or 1.83E-08 seconds for 1 FLOP
+Time for 100x100 Matrix: 5.405708865911174e+142 years
+NumPy array, vectorized sum: 2.82E+09 FLOPS, or 3.54E-10 seconds for 1 FLOP
+Time for 100x100 Matrix: 1.046546214997435e+141 years
+Torch Tensor (CPU), vectorized sum: 3.55E+09 FLOPS, or 2.81E-10 seconds for 1 FLOP
+Time for 100x100 Matrix: 8.314569960344053e+140 years
+Torch Tensor (GPU), vectorized sum: 4.16E+11 FLOPS, or 2.40E-12 seconds for 1 FLOP
+Time for 100x100 Matrix: 7.102457520465304e+138 years
+\end{lstlisting}
+I'm running an AMD Ryzen 7 3700X 8 Core CPU (I think I have a mild overclock?)
+as well as an nVidia RTX 2070 Super. Nearly half a TeraFLOP in one card :D
+
+\subsubsection*{d}
+\begin{enumerate}
+	\item See the above subsection code listing for script output (which does
+	      this calculation). Best case we're looking at about $7*10^138$ years, which
+	      is blazingly fast compared to the worst case of about $5*10^142$ years.
+	\item Sure, time is just like, a construct man. Although if I wait a year
+	      the hardware might improve enough to knock the exponent down by one or
+	      two...In all seriousness, no, absolutely not.
+\end{enumerate}
+
+
 
 \newpage
 
@@ -195,12 +222,14 @@ Ignoring the $F(n-1)$ term, the resulting expression becomes:
 so the algorithm is $\mathcal{O}(n^3)$.
 
 \subsubsection*{c}
-Sure, for a $100\times100$ matrix, $n=100\implies n^3=1,000,000$. Given that
-the bulk of the expense are matrix-matrix operations (which are indeed highly
+Sure, for a $100\times100$ matrix, $n=100\implies n^3=1,000,000$. Given that the
+bulk of the expense are matrix-matrix operations (which are indeed highly
 parallelizable), I'd feel comfortable quoting the ``theoretical'' maximum FLOPS
-performance of my GPU, an nVidia RTX 2070 Super at 283.2 GFLOPS for FP64.
-This matrix would require $\approx \frac{100^3}{283.2*10^9}=3.53$ microseconds
-to calculate.
+performance of my GPU, an nVidia RTX 2070 Super at 283.2 GFLOPS for FP64.  This
+matrix would require $\approx \frac{100^3}{283.2*10^9}=3.53$ microseconds to
+calculate. As an aside, this theoretical number is \textbf{LOWER} than my
+measured FLOPs estimate, and likely has something to do with sustained
+throughput vs. a one-off calculation.
 
 Of course, this algorithm isn't perfectly parallelizable, but even an order of
 magnitude slower would be 3.53 milliseconds...I'm probably not worried about
@@ -230,14 +259,44 @@ followed by forward and backward substitutions to compute $\mat{A}^{-1}$.
 The computational requirements, per problem 2, are $\mathcal{O}(n^3)$. As such,
 each numerator will require $\mathcal{O}((n-1)^3)$, the denominator will only
 need to be calculated once and will require $\mathcal{O}(n^3)$ operations, their
-division will require one flop per $n$, thus is $\mathcal{O}(n)$. These will need
-to be conducted for each element of the matrix, or $n^2$ times.
+division will require one flop per $n$, thus is $\mathcal{O}(n)$. These will
+need to be conducted for each element of the matrix, or $n^2$ times.
 
 So it will be:
 \[F(n) = n^2((n-1)^3+n)+n^3 = n^5-3n^4+5n^3-n^2 \approx \mathcal{O}(n^5)\]
 
-%------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
 \newpage
+
+\section*{Code}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+
+\lstset{style=mystyle}
+\lstinputlisting[
+	language=MATLAB,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw7/flop_estimate.py}
 \printbibliography
 \end{document}

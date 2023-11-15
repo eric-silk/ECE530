@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 import time
 from typing import Callable, Iterable
 
 import numpy as np
 import torch
+
+N_FACT = np.sqrt(2 * np.pi * 100) * (100 / np.e) ** 100
 
 
 def naive_loop(x: Iterable) -> None:
@@ -46,20 +49,27 @@ def estimate_flops(
     return n / (avg_time_ns / int(1e9))
 
 
+def print_results(desc: str, flops: float) -> None:
+    naivest_loop_flops = estimate_flops(naive_loop, int(n), "native")
+    flop_time = 1.0 / flops
+    print(f"{desc}: {flops:.2E} FLOPS, or {flop_time:.2E} seconds for 1 FLOP")
+    print(f"Time for 100x100 Matrix: {(N_FACT/3.15576e+7)*flop_time} years")
+
+
 if __name__ == "__main__":
     n = 1e6
     naivest_loop_flops = estimate_flops(naive_loop, int(n), "native")
-    print(f"Python list, naive for loop: {naivest_loop_flops:.2E}")
+    print_results("Python list, naive for loop", naivest_loop_flops)
 
     naive_loop_flops = estimate_flops(naive_loop, int(n), "native")
-    print(f"NumPy array, naive for loop: {naive_loop_flops:.2E}")
+    print_results("NumPy array, naive for loop", naive_loop_flops)
 
     n = 1e8
     numpy_flops = estimate_flops(numpy_vector_op, int(n), "numpy")
-    print(f"NumPy array, vectorized sum: {numpy_flops:.2E}")
+    print_results("NumPy array, vectorized sum", numpy_flops)
 
     torch_cpu_flops = estimate_flops(torch_cpu_or_gpu, int(n), "torch_cpu")
-    print(f"Torch Tensor (CPU), vectorized sum: {numpy_flops:.2E}")
+    print_results("Torch Tensor (CPU), vectorized sum", torch_cpu_flops)
 
     torch_gpu_flops = estimate_flops(torch_cpu_or_gpu, int(n), "torch_gpu")
-    print(f"Torch Tensor (GPU), vectorized sum: {numpy_flops:.2E}")
+    print_results("Torch Tensor (GPU), vectorized sum", torch_gpu_flops)
