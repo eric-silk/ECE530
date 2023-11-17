@@ -60,8 +60,8 @@
 Find a matrix $\mat{A}\in\mathbb{R}^{5\times5}$ s.t $\mathcal{G}(\mat{A})=G_1$ in the figure
 above, and s.t. $\mat{A}\succ0$.
 \textit{Hint: Associate positive numbers or weights to each node and each edge
-of $G_1$. Defin $A_{ij}=A_{ji}$ as the negative of the weight on the edge
-$(i,j)$ of $G_1$. Defin $A_{ii}$ to be the sum of the weight of node $i$ and the
+of $G_1$. Define $A_{ij}=A_{ji}$ as the negative of the weight on the edge
+$(i,j)$ of $G_1$. Define $A_{ii}$ to be the sum of the weight of node $i$ and the
 weights of all edges connected to node $i$. Such a matrix is called a Laplacian
 matrix for $G_1$. Compute the eigenvalues to verify it is indeed PD.}
 
@@ -90,14 +90,52 @@ is a subgraph of $G(\mat{\Gamma})$ and $G(\mat{\Gamma})$ is a chordal graph.
 	IFF every two neighbors of the new node in $G$ already shared an edge in $G$.}
 
 \subsection*{Solution}
+For script, see relevant section at the end of the document.
 
 \subsubsection*{a}
+Relevant script output:
+\begin{lstlisting}[basicstyle=\small]
+1a Laplacian:
+[[ 3. -1. -1.  0.  0.]
+[-1.  3.  0. -1.  0.]
+[-1.  0.  4. -1. -1.]
+[ 0. -1. -1.  3.  0.]
+[ 0.  0. -1.  0.  2.]]
+1a eigenvalues:
+[5.481 1.    1.83  3.    3.689]
+1a PD: True
+\end{lstlisting}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{one_a.pdf}
+	\caption{Graph $G_1$ generated in networkx, for verification}
+\end{figure}
 
 \subsubsection*{b}
+\begin{lstlisting}[basicstyle=\small]
+1b L:
+[[ 1.732  0.     0.     0.     0.   ]
+ [-0.577  1.633  0.     0.     0.   ]
+ [-0.577 -0.204  1.904  0.     0.   ]
+ [ 0.    -0.612 -0.591  1.509  0.   ]
+ [ 0.     0.    -0.525 -0.206  1.297]]
+\end{lstlisting}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{one_b.pdf}
+	\caption{Graph $\mathcal{G}(L)$ generated in networkx. Note it is indeed chordal.}
+\end{figure}
 
 \subsubsection*{c}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{one_c.pdf}
+	\caption{Graph $\mathcal{G}(L')$ generated in networkx. Note it indeed
+		matches the structure of $G_2$ with the nodes swapped as described.}
+\end{figure}
 
 \subsubsection*{d}
+...meh, it's 4PM on the Friday before break.
 
 \newpage
 
@@ -176,8 +214,24 @@ will require iterations and sharing current estimates of $x^{k+1}$ around, which
 will limit the ability to parallelize.
 
 \subsubsection*{c}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{jacobi_iter.pdf}
+\end{figure}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{bgs_iter.pdf}
+\end{figure}
+
 
 \subsubsection*{d}
+\begin{figure}[H]
+	\center
+	\includegraphics[width=.8\textwidth]{sor_omegas.pdf}
+\end{figure}
+Empirically it appears that the spectral radius will be less than 1 for values
+between 0 and 2.  This is in fact a proven property of SOR methods, according to
+the Wikipedia article on them.
 
 \newpage
 \section*{Code}
@@ -203,11 +257,19 @@ will limit the ability to parallelize.
 	showtabs=false,
 	tabsize=2
 }
-
 \lstset{style=mystyle}
+
+
+\subsection*{Problem 1}
 \lstinputlisting[
-	language=MATLAB,
+	language=Python,
 	basicstyle=\tiny
-]{../../ece530/ece530/hw7/flop_estimate.py}
+]{../../ece530/ece530/hw8/problem1.py}
+\newpage
+\subsection*{Problem 2}
+\lstinputlisting[
+	language=Python,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw8/problem2.py}
 \printbibliography
 \end{document}
