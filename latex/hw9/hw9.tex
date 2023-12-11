@@ -1,0 +1,221 @@
+\documentclass[11pt]{report}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+\usepackage{pgf,tikz}
+\usepackage[shortlabels]{enumitem}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage[margin = 1 in]{geometry}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{biblatex}
+\addbibresource{hw8.bib}
+\usepackage{listings}
+\usepackage{algorithmic}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\newcommand{\user}{}
+\newcommand{\xlr}[2]{#1 \left(#2\right)}
+\newcommand{\clr}[2]{#1 \left\{ #2 \right\}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\lhead{ECE 530 - Fall 2023 at University of Illinois at Urbana-Champaign}
+\rhead{HW9}
+\lfoot{Author: \textcolor{red}{Eric Silk, esilk2}}
+\rfoot{Due: Fri. December 15}
+\begin{document}
+
+
+\section*{Problem 1: Where do you belong, Krylov?}
+\subsection*{Problem Statement}
+
+\subsubsection*{a}
+
+\subsubsection*{b}
+
+\subsubsection*{c}
+
+\subsection*{Solution}
+
+\subsubsection*{a}
+
+\[
+	Aq^i = \frac{q^{i+1}}{\|q^{i+1}\|} + \sum_{k}^{i}\langle Aq^i,q^k\rangle q^k \in \mathcal{K}_{i+1}
+\]
+
+\subsubsection*{b}
+\[
+	\begin{bmatrix}
+		Aq_1 & | & \ldots & | & Aq_n
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		Qh_1 & | & \ldots & | & Qh_n
+	\end{bmatrix}
+\]
+\[\implies Aq_1=Qh_1\]
+\[Aq_1\in\mathcal{K}_2\implies Qh_1\in\mathcal{K}_2\]
+\[
+	Aq_1 = \begin{bmatrix}
+		* \\ * \\ 0 \\ 0 \\ \vdots \\ 0
+	\end{bmatrix},\
+	Aq_2 = \begin{bmatrix}
+		* \\ * \\ * \\ 0 \\ \vdots \\ 0
+	\end{bmatrix},\ \ldots
+	Aq_n = \begin{bmatrix}
+		* \\ * \\ * \\ * \\ \vdots \\ *
+	\end{bmatrix}
+\]
+
+\subsubsection*{c}
+
+\newpage
+
+\section*{Problem 2: Ask Gram, Schmidt, or Givens for QR}
+\subsection*{Problem Statement}
+\subsubsection*{a}
+
+\subsubsection*{b}
+
+\subsubsection*{c}
+
+\subsection*{Solution}
+\subsubsection*{a}
+Taken from ``Linear Algebra Done Right'' by Sheldon Axler.
+
+Suppose $v_1,\ldots,v_m$ is a lin. ind. list of vectors in $V$. Let $e_1=\frac{v_1}{\|v_1\|}$. For
+$j=2,\ldots,m$, define $e_j$ inductively by:
+\[
+	e_j = \frac{
+	v_j-\langle v_j,e_1\rangle e_1-\cdots -\langle v_j,e_{j-1}\rangle e_{j-1}
+	}{
+	\|v_j-\langle v_j,e_1\rangle e_1-\cdots -\langle v_j,e_{j-1}\rangle e_{j-1}\|
+	}
+\]
+(i.e. the Gram-Schmidt process definition). Then, $e_1,\ldots,e_m$ is an orthonormal list of vectors in $V$ s.t.:
+\[\mathrm{span}(v_1,\ldots,v_j)=\mathrm{span}(e_1,\ldots,e_j)\forall j=1,\ldots,m\]
+
+
+Note that for $j=1$, $\mathrm{span}(v_1)=\mathrm{span}(e_1)$ because $v_1$ is a positive mulitple of $e_1$.
+
+Suppose $1<j<m$ and it has been verified that:
+\[\mathrm{span}(v_1,\ldots,v_{j-1})=\mathrm{span}(e_1,\ldots,e_{j-1})\]
+Note that $v_j\notin \mathrm{span}(v_1,\ldots,v_{j-1})$ because $v_1\ldots,v_m$ are linearly independent.
+Thus, $v_j\notin \mathrm{span}(e_1,\ldots,e_{j-1})$. As such, we are not dividing by zero in the definition of $e_j$.
+We can also see that $\|e_j\|=1$ by its definition.
+
+Let $k\in[1,j)$. Then:
+\[
+	\langle e_j,e_k\rangle =
+	\bigg\langle
+	\frac{v_j-\langle v_j,e_1\rangle e_1 -\ldots - \langle v_j, e_{j-1}\rangle e_{j-1}}
+	{v_j-\langle v_j,e_1\rangle e_1 -\ldots - \langle v_j, e_{j-1}\rangle e_{j-1}}
+	, e_k
+	\bigg\rangle
+\]
+\[
+	= \frac{\langle v_j,e_k\rangle - \langle v_j, e_k\rangle}
+	{v_j-\langle v_j,e_1\rangle e_1 -\ldots - \langle v_j, e_{j-1}\rangle e_{j-1}}
+\]
+\[ = 0\]
+Thus $e_1,\ldots,e_j$ is an orthonormal list.
+
+From the definition of $e_j$, we see that $v_j\in\mathrm{span}(e_1,\ldots,e_j)$. Combined with the
+equivalency of the spans provided above, we know:
+\[\mathrm{span}(v_1,\ldots,v_j)\subset\mathrm{span}(e_1,\ldots,e_j)\]
+Both these lists are lin. ind., thus both subspaces have dimension $j$ and are equal.\qed
+
+\subsubsection*{b}
+\begin{algorithmic}
+	\FOR{$j=1,\ldots,n$}
+	\STATE $v\gets a^j$
+	\FOR{$i=1,\ldots,j-1$}
+	\STATE $R_{ij}\gets\langle v,q^i\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
+	\STATE $v\gets v-R_{ij}q^i$ \COMMENT{$m$ multiplications, $m$ subtractions $\implies 2m$}
+	\ENDFOR \COMMENT{Total cost is }
+	\STATE $q^j\gets \frac{v}{\|v\|}$ \COMMENT{$m$ multiplications, $m-1$ additions, $1$ for sqrt $\implies 2m$}
+	\STATE $R_{jj}\gets \langle a^j,q^j\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
+	\ENDFOR
+	\STATE $Q = (q^1|\ldots|q^n)$
+\end{algorithmic}
+The inner loop requires:
+\[(4m-1)(1-1)+(4m-1)+(2-1)+\ldots+(4m-1)(n-1) = (4m-1)(0+1+\ldots+n-1)=(4m-1)(\frac{1}{2}n(n+1)-1)\]
+The outer portion requires $(4m-1)*n$ operations. Summing:
+\[=(4m+1)(\frac{1}{2}n(n+1)-1)+(4m+1)(n)=(4m+1)(\frac{1}{2}n(n)-1+n)\]
+Simplifying and discarding lower order terms we find:
+\[=2mn^2\]
+
+\subsubsection*{c}
+An upper Hessenberg matrix of size $n\times n$ will require $n-1$ operations to zero out the
+non-zero elements below the diagonal, which will result in a QR decomposition.
+Givens matrices take the form:
+\[
+	G_n = \begin{bmatrix}
+		1      & \cdots & 0      & \cdots & 0      & \cdots & 0      \\
+		\vdots & \ddots & \vdots &        & \vdots &        & \vdots \\
+		0      & \cdots & \vdots &        & \vdots &        & \vdots \\
+		\vdots &        & \vdots &        & \vdots &        & \vdots \\
+		0      & \cdots & \vdots &        & \vdots &        & \vdots \\
+		\vdots &        & \vdots &        & \vdots &        & \vdots \\
+		0      & \cdots & 0      & \cdots & 0      & \cdots & 1
+	\end{bmatrix}
+\]
+
+
+\newpage
+\section*{Code}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2
+}
+\lstset{style=mystyle}
+
+
+\subsection*{Problem 1}
+\lstinputlisting[
+	language=Python,
+	basicstyle=\tiny
+]{../../ece530/ece530/hw9/arnoldi.py}
+\end{document}
