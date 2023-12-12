@@ -23,6 +23,7 @@
 \usepackage{biblatex}
 \addbibresource{hw8.bib}
 \usepackage{listings}
+\usepackage{algorithm}
 \usepackage{algorithmic}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -51,14 +52,6 @@
 
 
 \section*{Problem 1: Where do you belong, Krylov?}
-\subsection*{Problem Statement}
-
-\subsubsection*{a}
-
-\subsubsection*{b}
-
-\subsubsection*{c}
-
 \subsection*{Solution}
 
 \subsubsection*{a}
@@ -68,6 +61,21 @@
 \]
 
 \subsubsection*{b}
+
+We firstly note that $q^1=\frac{b}{\|b\|}$, and so we can note that it is a
+scaled version of $b$. Take this to be the first element of a Krylov subspace
+$\mathcal{K}^1=q^1$.  Furthermore, note that the definition of $q^2$ (or more
+generally, $q^{i+1}$) is equivalent to multiplying $Aq^{i}$ and subtracting the projection
+of the prior $q$'s. Critically, because the subspace is defined as the \textit{span} of a
+set of vectors, the resulting set of orthonormal vectors define an equivalent
+Krylov subspace -- they are, in fact, an orthonormal basis of this subspace.
+
+So, we can say:
+
+\[\mathcal{K}^i = \mathrm{span}(\left\{\frac{b}{\|b\|}, Aq_1,\ldots, Aq_{i-1}\right\})\]
+\[\mathcal{k}\]
+
+
 \[
 	\begin{bmatrix}
 		Aq_1 & | & \ldots & | & Aq_n
@@ -92,16 +100,27 @@
 \]
 
 \subsubsection*{c}
+See the code section at the end for the implementation. The result is:
+
+\begin{lstlisting}[basicstyle=\small]
+Did arnoldi work:
+True
+Q:
+[[0.58 0.31 -0.75]
+	[-0.58 0.81 -0.11]
+	[0.58 0.50 0.65]]
+H:
+[[0.33 3.09 0.00]
+	[3.09 7.56 0.95]
+	[0.00 0.95 -0.90]]
+Wow its upper Hessenberg, whoda thunk it
+Wow its lower Hessenberg, whoda thunk it
+Wow it's tridiagonal, its cuz the matrix A is Hermitian (or Symmetric cuz its real)
+\end{lstlisting}
 
 \newpage
 
 \section*{Problem 2: Ask Gram, Schmidt, or Givens for QR}
-\subsection*{Problem Statement}
-\subsubsection*{a}
-
-\subsubsection*{b}
-
-\subsubsection*{c}
 
 \subsection*{Solution}
 \subsubsection*{a}
@@ -150,18 +169,22 @@ equivalency of the spans provided above, we know:
 Both these lists are lin. ind., thus both subspaces have dimension $j$ and are equal.\qed
 
 \subsubsection*{b}
-\begin{algorithmic}
-	\FOR{$j=1,\ldots,n$}
-	\STATE $v\gets a^j$
-	\FOR{$i=1,\ldots,j-1$}
-	\STATE $R_{ij}\gets\langle v,q^i\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
-	\STATE $v\gets v-R_{ij}q^i$ \COMMENT{$m$ multiplications, $m$ subtractions $\implies 2m$}
-	\ENDFOR \COMMENT{Total cost is }
-	\STATE $q^j\gets \frac{v}{\|v\|}$ \COMMENT{$m$ multiplications, $m-1$ additions, $1$ for sqrt $\implies 2m$}
-	\STATE $R_{jj}\gets \langle a^j,q^j\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
-	\ENDFOR
-	\STATE $Q = (q^1|\ldots|q^n)$
-\end{algorithmic}
+
+\begin{algorithm}
+	\caption{Classical Gram-Schmidt, annotated with FLOP counts}
+	\begin{algorithmic}
+		\FOR{$j=1,\ldots,n$}
+		\STATE $v\gets a^j$
+		\FOR{$i=1,\ldots,j-1$}
+		\STATE $R_{ij}\gets\langle v,q^i\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
+		\STATE $v\gets v-R_{ij}q^i$ \COMMENT{$m$ multiplications, $m$ subtractions $\implies 2m$}
+		\ENDFOR \COMMENT{Total cost is }
+		\STATE $q^j\gets \frac{v}{\|v\|}$ \COMMENT{$m$ multiplications, $m-1$ additions, $1$ for sqrt $\implies 2m$}
+		\STATE $R_{jj}\gets \langle a^j,q^j\rangle$ \COMMENT{$m$ multiplications, $(m-1)$ additions $\implies 2m-1$}
+		\ENDFOR
+		\STATE $Q = (q^1|\ldots|q^n)$
+	\end{algorithmic}
+\end{algorithm}
 The inner loop requires:
 \[(4m-1)(1-1)+(4m-1)+(2-1)+\ldots+(4m-1)(n-1) = (4m-1)(0+1+\ldots+n-1)=(4m-1)(\frac{1}{2}n(n+1)-1)\]
 The outer portion requires $(4m-1)*n$ operations. Summing:
@@ -177,13 +200,36 @@ Givens matrices take the form:
 	G_n = \begin{bmatrix}
 		1      & \cdots & 0      & \cdots & 0      & \cdots & 0      \\
 		\vdots & \ddots & \vdots &        & \vdots &        & \vdots \\
-		0      & \cdots & \vdots &        & \vdots &        & \vdots \\
-		\vdots &        & \vdots &        & \vdots &        & \vdots \\
-		0      & \cdots & \vdots &        & \vdots &        & \vdots \\
-		\vdots &        & \vdots &        & \vdots &        & \vdots \\
+		0      & \cdots & c      & \cdots & -s     & \cdots & 0      \\
+		\vdots &        & \vdots & \ddots & \vdots &        & \vdots \\
+		0      & \cdots & s      & \cdots & c      & \cdots & \vdots \\
+		\vdots &        & \vdots &        & \vdots & \ddots & \vdots \\
 		0      & \cdots & 0      & \cdots & 0      & \cdots & 1
 	\end{bmatrix}
 \]
+The location of the $c$ and $s$ terms correspond to zeroing element $i$ and $j$;
+that is, to zero element $A_{i,j}$, we set $s=G_{ji}=-G{ij}$ and $G_{k,k}=c$ for
+$k=i,j$ (and 1 for $k\neq i,j)$. The resulting algorithm is as follows:
+\begin{algorithm}
+	\caption{QR Factorization of an Upper Hessenberg Matrix using Givens rotations}
+	\begin{algorithmic}
+		\STATE Input: $A^1\in\mathbb{R}^{n\times n}$, $A_{ij}=0\forall i>j+1$
+		\COMMENT{This could be a parfor}
+		\FOR{$j=1,\ldots,n-1$}
+		\STATE $i\gets j+1$
+		\STATE $r^{j}\gets \sqrt{\left[{A}^{j}_{jj}\right]^2+\left[A^{j}_{ij}\right]^2}$
+		\STATE $c\gets A^j_{jj}/r$
+		\STATE $s \gets -A^j_{ij}/r$
+		\STATE $G^{j}_{ji} \gets s$
+		\STATE $G^{j}_{ij}\gets -s$
+		\STATE $G^{j}_{ii}\gets c$
+		\STATE $G^{j}_{jj}\gets c$
+		\STATE $A^{j+1} \gets G^{j}A^j$
+		\ENDFOR
+		\STATE $Q = \Pi_{j=1}^{n-1} G^{j}$
+		\STATE $R = A^{n-1}$
+	\end{algorithmic}
+\end{algorithm}
 
 
 \newpage
