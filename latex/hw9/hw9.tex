@@ -55,49 +55,57 @@
 \subsection*{Solution}
 
 \subsubsection*{a}
-
 \[
-	Aq^i = \frac{q^{i+1}}{\|q^{i+1}\|} + \sum_{k}^{i}\langle Aq^i,q^k\rangle q^k \in \mathcal{K}_{i+1}
+	Aq^1
+	= A\frac{b}{\|b\|}
+	\in \mathrm{span}(\left\{b, Ab\right\})
+	= \mathcal{K}_2
+	= \mathrm{span}(\left\{q^1, Aq^1\right\})
+	= \mathrm{span}(\left\{q^1, q^2\right\})
 \]
+\[ v^{i+1} = Aq^i - \sum_{k=1}^{i}\langle Aq^i,q^k\rangle q^k \]
+Note that the inner products are scalars and denote them as $\alpha_k$:
+\[  = Aq^i - \sum_{k=1}^{i}\alpha_k q^k \]
+\[q^{i+1} = \frac{v^{i+1}}{\|v^{i+1}\|} = \frac{Aq^i - \sum_{k=1}^{i}\alpha_kq^k}{\|Aq^i - \sum_{k=1}^{i}\alpha_kq^k\|}\]
+Again, note that the denominator norm is a scalar; we will call it $\gamma_i$. Substitute and re-arrange:
+\[ Aq^i = \gamma_i q^{i+1} + \sum_{k=1}^{i}\alpha_kq^k \]
+\[\implies Aq^{i} \in \mathrm{span}(\left\{q_1,\ldots, q^{i+1}\right\}) = \mathcal{K}_{i+1}\]
+Then, we note that for $i\geq m$, $\mathcal{K}_{i} = \mathcal{K}_{m}$. So:
+\[ j = \min(i+1, m) \]
 
 \subsubsection*{b}
+Taken from \textit{Numerical Linear Algebra} by Trefethen and Bau.
 
-We firstly note that $q^1=\frac{b}{\|b\|}$, and so we can note that it is a
-scaled version of $b$. Take this to be the first element of a Krylov subspace
-$\mathcal{K}^1=q^1$.  Furthermore, note that the definition of $q^2$ (or more
-generally, $q^{i+1}$) is equivalent to multiplying $Aq^{i}$ and subtracting the projection
-of the prior $q$'s. Critically, because the subspace is defined as the \textit{span} of a
-set of vectors, the resulting set of orthonormal vectors define an equivalent
-Krylov subspace -- they are, in fact, an orthonormal basis of this subspace.
+Consider the Hessenberg decomposition:
+\[A = PHP^*\]
+where $P$ is a unitary matrix (i.e. $PP^*=P^*P=PP^{-1}=I$). Note that orthonormal matrices are unitary,
+and restrict our case to state we wish to perform a Hessenberg decomposition via orthonormal matrix $Q$. Then:
+\[A = QHQ^* \implies AQ = QH\]
+Let $Q_n$ be the first $n$ columns of $Q$ and $H_n$ to be the $(n+1)\times n$ upper-left section of $H$ (which
+is also Hessenberg!). Then:
+\[AQ_n = Q_{n+1}H_n\]
+The $n$-th column of the equation is:
+\[Aq_n = h1_nq_1+\ldots+h_{nn}q_n+h_{n+1,n}q_{n+1}\]
+Solving for $q_{n+1}$ will require a technique to ensure it's orthonormality -- if we use Modified Gram-Schmidt,
+we get:
+\begin{algorithm}[H]
+	\caption{Algorithm to solve the above equation with an orthonormal $q_{n+1}$}
+	\begin{algorithmic}
+		\STATE $b \in \mathbb{R}^{n}$, $q_1 \gets \frac{b}{\|b\|}$
+		\FOR{$n=1,2,3\ldots$}
+		\STATE $v\gets Aq_n$
+		\FOR{$j=1,\ldots,n$}
+		\STATE $h_{jn}\gets q^*_jv$
+		\STATE $v \gets v - h_{jn}q_{j}$
+		\ENDFOR
+		\STATE $h_{n+1,n}\gets \|v\|$
+		\STATE $q_{n+1}\gets \frac{v}{h_{n+1,n}}$
+		\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+...which is identical to the provided iterate equations.\qed
 
-So, we can say:
 
-\[\mathcal{K}^i = \mathrm{span}(\left\{\frac{b}{\|b\|}, Aq_1,\ldots, Aq_{i-1}\right\})\]
-\[\mathcal{k}\]
-
-
-\[
-	\begin{bmatrix}
-		Aq_1 & | & \ldots & | & Aq_n
-	\end{bmatrix}
-	=
-	\begin{bmatrix}
-		Qh_1 & | & \ldots & | & Qh_n
-	\end{bmatrix}
-\]
-\[\implies Aq_1=Qh_1\]
-\[Aq_1\in\mathcal{K}_2\implies Qh_1\in\mathcal{K}_2\]
-\[
-	Aq_1 = \begin{bmatrix}
-		* \\ * \\ 0 \\ 0 \\ \vdots \\ 0
-	\end{bmatrix},\
-	Aq_2 = \begin{bmatrix}
-		* \\ * \\ * \\ 0 \\ \vdots \\ 0
-	\end{bmatrix},\ \ldots
-	Aq_n = \begin{bmatrix}
-		* \\ * \\ * \\ * \\ \vdots \\ *
-	\end{bmatrix}
-\]
 
 \subsubsection*{c}
 See the code section at the end for the implementation. The result is:
@@ -214,7 +222,7 @@ $k=i,j$ (and 1 for $k\neq i,j)$. The resulting algorithm is as follows:
 	\caption{QR Factorization of an Upper Hessenberg Matrix using Givens rotations}
 	\begin{algorithmic}
 		\STATE Input: $A^1\in\mathbb{R}^{n\times n}$, $A_{ij}=0\forall i>j+1$
-		\COMMENT{This could be a parfor}
+		\COMMENT{This could be a parallelized ``loop''}
 		\FOR{$j=1,\ldots,n-1$}
 		\STATE $i\gets j+1$
 		\STATE $r^{j}\gets \sqrt{\left[{A}^{j}_{jj}\right]^2+\left[A^{j}_{ij}\right]^2}$
